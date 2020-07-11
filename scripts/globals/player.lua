@@ -122,10 +122,10 @@ local function CharCreate(player)
 
     player:addItem(536) -- adventurer coupon
     player:addTitle(tpz.title.NEW_ADVENTURER)
-    player:setCharVar("MoghouseExplication", 1) -- needs Moghouse intro
-    player:setCharVar("spokeKindlix", 1) -- Kindlix introduction
-    player:setCharVar("spokePyropox", 1) -- Pyropox introduction
-    player:setCharVar("TutorialProgress", 1) -- Has not started tutorial
+    player:setCharVar("MoghouseExplication", 0) -- needs Moghouse intro
+    player:setCharVar("spokeKindlix", 0) -- Kindlix introduction
+    player:setCharVar("spokePyropox", 0) -- Pyropox introduction
+    player:setCharVar("TutorialProgress", 0) -- Has not started tutorial
     player:setNewPlayer(true) -- apply new player flag
 end
 
