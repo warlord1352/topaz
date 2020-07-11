@@ -78,7 +78,7 @@ local function CharCreate(player)
 
     -- unlock subjob
     if SUBJOB_QUEST_LEVEL == 0 then
-        player:unlockJob(0)
+        player:unlockJob(1)
     end
 
     -- give all maps
