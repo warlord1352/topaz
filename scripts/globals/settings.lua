@@ -54,11 +54,11 @@ START_INVENTORY = 80 -- Starting inventory and satchel size.  Ignores values < 3
 NEW_CHARACTER_CUTSCENE = 0 -- Set to 1 to enable opening cutscenes, 0 to disable.
 SUBJOB_QUEST_LEVEL = 0 -- Minimum level to accept either subjob quest.  Set to 0 to start the game with subjobs unlocked.
 ADVANCED_JOB_LEVEL = 0 -- Minimum level to accept advanced job quests.  Set to 0 to start the game with advanced jobs.
-ALL_MAPS = 0 -- Set to 1 to give starting characters all the maps.
+ALL_MAPS = 1 -- Set to 1 to give starting characters all the maps.
 UNLOCK_OUTPOST_WARPS = 2 -- Set to 1 to give starting characters all outpost warps.  2 to add Tu'Lia and Tavnazia.
 
 SHOP_PRICE      = 1.000 -- Multiplies prices in NPC shops.
-GIL_RATE        = 1.000 -- Multiplies gil earned from quests.  Won't always display in game.
+GIL_RATE        = 2.000 -- Multiplies gil earned from quests.  Won't always display in game.
 BAYLD_RATE      = 1.000 -- Multiples bayld earned from quests.
 EXP_RATE        = 3.000 -- Multiplies exp earned from fov and quests.
 TABS_RATE       = 1.000 -- Multiplies tabs earned from fov.
@@ -95,7 +95,7 @@ CHEST_MIN_ILLUSION_TIME  = 1800  -- 30 minutes
 -- Sets spawn type for: Behemoth, Fafnir, Adamantoise, King Behemoth, Nidhog, Aspidochelone.
 -- Use 0 for timed spawns, 1 for force pop only, 2 for both
 LandKingSystem_NQ = 2
-LandKingSystem_HQ = 1
+LandKingSystem_HQ = 2
 
 -- DYNAMIS SETTINGS
     BETWEEN_2DYNA_WAIT_TIME = 24       -- Hours before player can re-enter Dynamis. Default is 1 Earthday (24 hours).
@@ -104,9 +104,9 @@ LandKingSystem_HQ = 1
     TIMELESS_HOURGLASS_COST = 500000   -- refund for the timeless hourglass for Dynamis.
    PRISMATIC_HOURGLASS_COST = 50000    -- cost of the prismatic hourglass for Dynamis.
      CURRENCY_EXCHANGE_RATE = 100      -- X Tier 1 ancient currency -> 1 Tier 2, and so on.  Certain values may conflict with shop items.  Not designed to exceed 198.
-RELIC_2ND_UPGRADE_WAIT_TIME = 7200     -- wait time for 2nd relic upgrade (stage 2 -> stage 3) in seconds. 7200s = 2 hours.
-RELIC_3RD_UPGRADE_WAIT_TIME = 3600     -- wait time for 3rd relic upgrade (stage 3 -> stage 4) in seconds. 3600s = 1 hour.
-FREE_COP_DYNAMIS = 0  -- Authorize player to entering inside COP Dynamis without completing COP mission ( 1 = enable 0= disable)
+RELIC_2ND_UPGRADE_WAIT_TIME = 30     -- wait time for 2nd relic upgrade (stage 2 -> stage 3) in seconds. 7200s = 2 hours.
+RELIC_3RD_UPGRADE_WAIT_TIME = 30     -- wait time for 3rd relic upgrade (stage 3 -> stage 4) in seconds. 3600s = 1 hour.
+FREE_COP_DYNAMIS = 1  -- Authorize player to entering inside COP Dynamis without completing COP mission ( 1 = enable 0= disable)
 
 -- QUEST/MISSION SPECIFIC SETTINGS
 AF1_QUEST_LEVEL = 40 -- Minimum level to start AF1 quest

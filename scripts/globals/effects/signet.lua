@@ -14,6 +14,9 @@ require("scripts/globals/status")
 -----------------------------------
 
 function onEffectGain(target,effect)
+	target:addMod(tpz.mod.RERAISE_III, 1)
+	target:addMod(tpz.mod.REFRESH, 1)
+	target:addMod(tpz.mod.REGEN, 1)
     target:addLatent(tpz.latent.SIGNET_BONUS, 0, tpz.mod.DEF, 15)
     target:addLatent(tpz.latent.SIGNET_BONUS, 0, tpz.mod.EVA, 15)
 end
@@ -22,6 +25,7 @@ function onEffectTick(target,effect)
 end
 
 function onEffectLose(target,effect)
+	target:delMod(tpz.mod.RERAISE_III, 1)
     target:delLatent(tpz.latent.SIGNET_BONUS, 0, tpz.mod.DEF, 15)
     target:delLatent(tpz.latent.SIGNET_BONUS, 0, tpz.mod.EVA, 15)
 end

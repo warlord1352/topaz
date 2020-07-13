@@ -103,9 +103,9 @@ local function CharCreate(player)
     end
 
     -- increase starting inventory
-    if START_INVENTORY > 30 then
-        player:changeContainerSize(tpz.inv.INVENTORY, START_INVENTORY - 30)
-        player:changeContainerSize(tpz.inv.MOGSATCHEL, START_INVENTORY - 30)
+    if START_INVENTORY > 80 then
+        player:changeContainerSize(tpz.inv.INVENTORY, START_INVENTORY - 80)
+        player:changeContainerSize(tpz.inv.MOGSATCHEL, START_INVENTORY - 80)
     end
 
     --[[
