@@ -11,33 +11,33 @@ cmdprops =
 
 local word  = "";
 function onTrigger(player, word)
-   if (word == "dem") then
-       player:setPos(220,19,302,209,108);
-   end
-   if (word == "holla") then
-      player:setPos(418,19,21,197,102);
-   end
-   if (word == "mea") then
-       player:setPos(100,35.1506,340,0,0x75);
-   end
-   if (word == "altep") then
-       player:setPos(-61.942,3.949,224.9,0,0x72);
-   end
-   if (word == "yhoat") then
-       player:setPos(-280.942,0.596,-144.156,0,0x7c);
-   end
-   if (word == "vahzl") then
-       player:setPos(150.258,-21.048,-37.256,94,0x70);
-   end
-   if (word == "jugner") then
-       player:setPos(-122.862, 0, -163.154, 192, 0x52);
-   end
-   if (word == "meriph") then
-       player:setPos(305.989, -14.978, 18.96, 192, 0x61);
-   end
-   if (word == "pashh") then
-       player:setPos(345.472, 24.28, -114.731, 99, 0x5A);
-   end	
+	if (word == "dem") and player:hasKeyItem(tpz.ki.DEM_GATE_CRYSTAL) == true then
+			player:setPos(220,19,302,0,108);
+	end
+    if (word == "holla") and player:hasKeyItem(tpz.ki.HOLLA_GATE_CRYSTAL) == true then
+			player:setPos(418,19,21,197,102);
+	end
+	if (word == "mea") and player:hasKeyItem(tpz.ki.MEA_GATE_CRYSTAL) == true then
+			player:setPos(100,35.1506,340,0,0x75);
+    end
+	if (word == "altep") and player:hasKeyItem(tpz.ki.ALTEPA_GATE_CRYSTAL) == true then
+			player:setPos(-61.942,3.949,224.9,0,0x72);
+    end
+	if (word == "yhoat") and player:kasKeyItem(tpz.ki.YHOATOR_GATE_CRYSTAL) == true then
+			player:setPos(-280.942,0.596,-144.156,0,0x7c);
+    end
+	if (word == "vahzl") and player:kasKeyItem(tpz.ki.VAHZL_GATE_CRYSTAL) == true then
+			player:setPos(150.258,-21.048,-37.256,94,0x70);
+    end
+	if (word == "jugner") and player:kasKeyItem(tpz.ki.JUGNER_GATE_CRYSTAL) == true then
+			player:setPos(-122.862, 0, -163.154, 192, 0x52);
+    end
+	if (word == "meriph") and player:kasKeyItem(tpz.ki.MERIPHATAUD_GATE_CRYSTAL) == true then
+			player:setPos(305.989, -14.978, 18.96, 192, 0x61);
+    end
+	if (word == "pashh") and player:kasKeyItem(tpz.ki.PASHHOW_GATE_CRYSTAL) == true then
+			player:setPos(345.472, 24.28, -114.731, 99, 0x5A);
+    end	
     if (word == "azouph") then
 		player:setPos(522.73, -28.009, -502.621, 161, 0x4f); -- to Caedarva Mire {R}
 	end

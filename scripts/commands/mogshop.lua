@@ -1,5 +1,5 @@
 --------------------------------------------------------------
--- func: @mogshop <page number>
+-- func: !mogshop <page number>
 -- auth: forgottenandlost
 -- desc: opens the custom moogle shop menu anywhere in the world
 --------------------------------------------------------------
@@ -27,7 +27,7 @@ function onTrigger(player,page)
             4244,   5000,   -- HQ Light Crystal
             4245,   5000    -- HQ Dark Crystal
         };
-        showShop(player, STATIC, stock_1);
+        show.tpz.Shop(player, STATIC, stock_1);
         player:PrintToPlayer( "Crystal Depot: Welcome, Kupo!");
     elseif (page == 2) then -- Pharmacy
         local stock_2 =
