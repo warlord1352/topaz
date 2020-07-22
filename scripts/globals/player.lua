@@ -105,9 +105,9 @@ local function CharCreate(player)
     end
 
     -- increase starting inventory
-    if START_INVENTORY > 80 then
-        player:changeContainerSize(tpz.inv.INVENTORY, START_INVENTORY - 80)
-        player:changeContainerSize(tpz.inv.MOGSATCHEL, START_INVENTORY - 80)
+    if START_INVENTORY > 30 then
+        player:changeContainerSize(tpz.inv.INVENTORY, START_INVENTORY - 30)
+        player:changeContainerSize(tpz.inv.MOGSATCHEL, START_INVENTORY - 30)
     end
 
     --[[
@@ -123,12 +123,50 @@ local function CharCreate(player)
     end
 
     player:addItem(536) -- adventurer coupon
+	
+	
+	
     player:addTitle(tpz.title.NEW_ADVENTURER)
     player:setCharVar("MoghouseExplication", 0) -- needs Moghouse intro
     player:setCharVar("spokeKindlix", 0) -- Kindlix introduction
     player:setCharVar("spokePyropox", 0) -- Pyropox introduction
     player:setCharVar("TutorialProgress", 0) -- Has not started tutorial
     player:setNewPlayer(true) -- apply new player flag
+	
+	
+	--add AF1 storage slips
+	player:addKeyItem(tpz.ki.FIGHTERS_ARMOR_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.TEMPLE_ATTIRE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.HEALERS_ATTIRE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.WIZARDS_ATTIRE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.WARLOCKS_ARMOR_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.ROGUES_ATTIRE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.GALLANT_ARMOR_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.CHAOS_ARMOR_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.BEAST_ARMOR_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.CHORAL_ATTIRE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.HUNTERS_ATTIRE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.MYOCHIN_ARMOR_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.NINJAS_GARB_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.DRACHEN_ARMOR_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.EVOKERS_ATTIRE_CLAIM_SLIP)
+	
+	
+	--add all race-specific level 27 gear
+	player:addKeyItem(tpz.ki.CUSTOM_ARMOR_MALE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.CUSTOM_ARMOR_FEMALE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.MAGNA_ARMOR_MALE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.MAGNA_ARMOR_FEMALE_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.WONDER_ARMOR_CLAIM_SLIP)
+    player:addKeyItem(tpz.ki.SAVAGE_ARMOR_CLAIM_SLIP)
+	player:addKeyItem(tpz.ki.ELDER_ARMOR_CLAIM_SLIP)
+	--player:addItem(2955) --kindred crest
+	
+	-- Start of custom stuffs for new players
+    if (player:getFreeSlotsCount() > 0) then -- Make sure LS exists and player has at least 1 free space
+        player:addLSpearl("ItsDebbie"); -- Give an LS pearl to all new players
+    end
+	
 end
 
 -----------------------------------
