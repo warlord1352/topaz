@@ -6729,6 +6729,8 @@ INSERT INTO `item_mods` VALUES (11986,117,15);    -- Summoning Magic Skill+15
 INSERT INTO `item_mods` VALUES (11986,384,300);    -- Haste +3%
 INSERT INTO `item_mods` VALUES (11987,1,45);      -- ngen_seraweels DEF:+45
 INSERT INTO `item_mods` VALUES (11987,117,10);    -- Summoning Magic Skill+10
+INSERT INTO `item_mods` VALUES (11993,25,3);    -- Rogue's Torque Acc +3
+INSERT INTO `item_mods` VALUES (11993,68,3);    -- Evasion +3
 INSERT INTO `item_mods` VALUES (12008,1,33);
 INSERT INTO `item_mods` VALUES (12008,8,3);
 INSERT INTO `item_mods` VALUES (12008,10,3);
