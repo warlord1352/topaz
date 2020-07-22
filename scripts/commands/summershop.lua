@@ -1,8 +1,8 @@
---------------------------------------------------------------
--- func: !shop
--- auth: forgottenandlost
--- desc: opens a custom shop anywhere in the world
---------------------------------------------------------------
+-----------------------------------
+-- !summershop cmd
+--command for summer clothing shopping!
+-- !pos -305.775 -10.319 -152.173 235
+-----------------------------------
 
 cmdprops =
 {
@@ -10,12 +10,11 @@ cmdprops =
     parameters = "i"
 };
 
+require("scripts/globals/shop")
+
 function onTrigger(player,page)
-    if (page == 0 or page == nil) then
-        player:PrintToPlayer( "1: goldfishing stuff, 2: summer stuff");
-    elseif (page == 1) then -- Summer Stuff!!!!
-		local stock_1 =
-		{
+    local stock =
+    {
 			11318,	12500,		-- Otokoeshi Yukata
 			11319,	12500,		-- Ominaeshi Yukata
 			11861,	15000,		-- Hikogami Yukata
@@ -28,6 +27,7 @@ function onTrigger(player,page)
 			14535,	7500,		-- Onnagimi Yukata
 			28149,	15000,		-- Kengyu Hanmomohiki
 			28150,	15000,		-- Shokujo Hanmomohiki
+			
 			
 			14457,	7500,		-- Hume Gilet +1
 			15415,	7500, 		-- Hume Trunks +1
@@ -46,6 +46,8 @@ function onTrigger(player,page)
 			14472,	7500,		-- tarutaru top +1
 			15424,	7500,		-- tarutaru shorts +1
 			
+			
+			
 			11273,	7500,		-- custom Gilet +1
 			16329,	7500,		-- custom Trunks +1
 			11274,	7500,		-- custom top +1
@@ -62,6 +64,7 @@ function onTrigger(player,page)
 			16333,	7500,		-- wonder trunks +1
 			11278,	7500,		-- wonder top +1
 			16334,	7500,		-- wonder shorts +1
+			
 			
 			10264,	7500,		-- marine Gilet +1
 			10338,	7500,		-- marine boxers +1
@@ -84,10 +87,8 @@ function onTrigger(player,page)
 			28088,	7500,		-- rustic trunks +1
 			27806,	7500,		-- shoal maillot +1
 			28089,	7500		-- shoal trunks +1
-		};
-		showShop(player, STATIC, stock_1);
+    }
 
-    else
-        player:PrintToPlayer( string.format( "Page %i not found.", page ) );
-    end
-end;
+    
+    tpz.shop.general(player, stock)
+end
