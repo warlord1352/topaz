@@ -57,7 +57,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/
 #include "../packets/linkshell_equip.h"
 #include "../packets/menu_merit.h"
 #include "../packets/message_basic.h"
-#include "../packets/message_debug.h"
+#include "../packets/message_combat.h"
 #include "../packets/message_special.h"
 #include "../packets/message_standard.h"
 #include "../packets/quest_mission_log.h"
@@ -1024,11 +1024,35 @@ namespace charutils
 
             if (PLinkshell1)
             {
-                linkshell::AddOnlineMember(PChar, PLinkshell1, 1);
+                ret = Sql_Query(SqlHandle, "SELECT broken FROM linkshells WHERE linkshellid = %u LIMIT 1", PLinkshell1->GetLSID());
+                if (ret != SQL_ERROR && Sql_NumRows(SqlHandle) != 0 && Sql_NextRow(SqlHandle) == SQL_SUCCESS && Sql_GetUIntData(SqlHandle, 0) == 1)
+                { // if the linkshell has been broken, unequip
+                    uint8 SlotID = PLinkshell1->getSlotID();
+                    uint8 LocationID = PLinkshell1->getLocationID();
+                    PLinkshell1->setSubType(ITEM_UNLOCKED);
+                    PChar->equip[SLOT_LINK1] = 0;
+                    Sql_Query(SqlHandle, "DELETE char_equip FROM char_equip WHERE charid = %u AND slotid = %u AND containerid = %u", PChar->id, SlotID, LocationID);
+                }
+                else
+                {
+                    linkshell::AddOnlineMember(PChar, PLinkshell1, 1);
+                }
             }
             if (PLinkshell2)
             {
-                linkshell::AddOnlineMember(PChar, PLinkshell2, 2);
+                ret = Sql_Query(SqlHandle, "SELECT broken FROM linkshells WHERE linkshellid = %u LIMIT 1", PLinkshell2->GetLSID());
+                if (ret != SQL_ERROR && Sql_NumRows(SqlHandle) != 0 && Sql_NextRow(SqlHandle) == SQL_SUCCESS && Sql_GetUIntData(SqlHandle, 0) == 1)
+                { // if the linkshell has been broken, unequip
+                    uint8 SlotID = PLinkshell2->getSlotID();
+                    uint8 LocationID = PLinkshell2->getLocationID();
+                    PLinkshell2->setSubType(ITEM_UNLOCKED);
+                    PChar->equip[SLOT_LINK1] = 0;
+                    Sql_Query(SqlHandle, "DELETE char_equip FROM char_equip WHERE charid = %u AND slotid = %u AND containerid = %u", PChar->id, SlotID, LocationID);
+                }
+                else
+                {
+                    linkshell::AddOnlineMember(PChar, PLinkshell2, 2);
+                }
             }
         }
         else
@@ -2377,30 +2401,30 @@ namespace charutils
                 {
                     if (PetID == 8)
                     {
-                        if (PAbility->getID() >= 496 && PAbility->getID() < 505)
+                        if (PAbility->getID() >= ABILITY_HEALING_RUBY && PAbility->getID() <= ABILITY_SOOTHING_RUBY)
                         {
-                            addPetAbility(PChar, PAbility->getID() - 496);
+                            addPetAbility(PChar, PAbility->getID() - ABILITY_HEALING_RUBY);
                         }
                     }
                     else if (PetID >= 9 && PetID <= 15)
                     {
-                        if (PAbility->getID() >= (496 + ((PetID - 8) * 16)) && PAbility->getID() < (496 + ((PetID - 7) * 16)))
+                        if (PAbility->getID() >= (ABILITY_HEALING_RUBY + ((PetID - 8) * 16)) && PAbility->getID() < (ABILITY_HEALING_RUBY + ((PetID - 7) * 16)))
                         {
-                            addPetAbility(PChar, PAbility->getID() - 496);
+                            addPetAbility(PChar, PAbility->getID() - ABILITY_HEALING_RUBY);
                         }
                     }
                     else if (PetID == 16)
                     {
-                        if (PAbility->getID() >= 640 && PAbility->getID() <= 656)
+                        if (PAbility->getID() >= ABILITY_CAMISADO && PAbility->getID() <= ABILITY_PERFECT_DEFENSE)
                         {
-                            addPetAbility(PChar, PAbility->getID() - 496);
+                            addPetAbility(PChar, PAbility->getID() - ABILITY_HEALING_RUBY);
                         }
                     }
                     else if (PetID == 20)
                     {
-                        if (PAbility->getID() >= 505 && PAbility->getID() <= 512)
+                        if (PAbility->getID() > ABILITY_SOOTHING_RUBY && PAbility->getID() <= ABILITY_MOONLIT_CHARGE)
                         {
-                            addPetAbility(PChar, PAbility->getID() - 496);
+                            addPetAbility(PChar, PAbility->getID() - ABILITY_HEALING_RUBY);
                         }
                     }
                 }
@@ -2411,7 +2435,7 @@ namespace charutils
             auto skillList {battleutils::GetMobSkillList(PPet->m_MobSkillList)};
             for (auto&& abilityid : skillList)
             {
-                addPetAbility(PChar, abilityid - 496);
+                addPetAbility(PChar, abilityid - ABILITY_HEALING_RUBY);
             }
         }
         PChar->pushPacket(new CCharAbilitiesPacket(PChar));
@@ -2442,7 +2466,7 @@ namespace charutils
 
             if (PChar->GetMLevel() >= PAbility->getLevel())
             {
-                if (PAbility->getID() < 496 && PAbility->getID() != ABILITY_PET_COMMANDS && CheckAbilityAddtype(PChar, PAbility))
+                if (PAbility->getID() < ABILITY_HEALING_RUBY && PAbility->getID() != ABILITY_PET_COMMANDS && CheckAbilityAddtype(PChar, PAbility))
                 {
                     addAbility(PChar, PAbility->getID());
                     Charge_t* charge = ability::GetCharge(PChar, PAbility->getRecastId());
@@ -2481,7 +2505,7 @@ namespace charutils
                     continue;
                 }
 
-                if (PAbility->getLevel() != 0 && PAbility->getID() < 496)
+                if (PAbility->getLevel() != 0 && PAbility->getID() < ABILITY_HEALING_RUBY)
                 {
                     if (PAbility->getID() != ABILITY_PET_COMMANDS && CheckAbilityAddtype(PChar, PAbility) && !(PAbility->getAddType() & ADDTYPE_MAIN_ONLY))
                     {
@@ -3579,7 +3603,7 @@ namespace charutils
                     PChar->PParty->ReloadParty();
                 }
 
-                PChar->loc.zone->PushPacket(PChar, CHAR_INRANGE_SELF, new CMessageDebugPacket(PChar, PChar, PChar->jobs.job[PChar->GetMJob()], 0, 11));
+                PChar->loc.zone->PushPacket(PChar, CHAR_INRANGE_SELF, new CMessageCombatPacket(PChar, PChar, PChar->jobs.job[PChar->GetMJob()], 0, 11));
                 luautils::OnPlayerLevelDown(PChar);
                 PChar->updatemask |= UPDATE_HP;
             }
@@ -3631,19 +3655,19 @@ namespace charutils
                 if (PChar->expChain.chainNumber != 0)
                 {
                     if (onLimitMode)
-                        PChar->pushPacket(new CMessageDebugPacket(PChar, PChar, exp, PChar->expChain.chainNumber, 372));
+                        PChar->pushPacket(new CMessageCombatPacket(PChar, PChar, exp, PChar->expChain.chainNumber, 372));
                     else
-                        PChar->pushPacket(new CMessageDebugPacket(PChar, PChar, exp, PChar->expChain.chainNumber, 253));
+                        PChar->pushPacket(new CMessageCombatPacket(PChar, PChar, exp, PChar->expChain.chainNumber, 253));
                 }
                 else
                 {
                     if (onLimitMode)
                     {
-                        PChar->pushPacket(new CMessageDebugPacket(PChar, PChar, exp, 0, 371));
+                        PChar->pushPacket(new CMessageCombatPacket(PChar, PChar, exp, 0, 371));
                     }
                     else
                     {
-                        PChar->pushPacket(new CMessageDebugPacket(PChar, PChar, exp, 0, 8));
+                        PChar->pushPacket(new CMessageCombatPacket(PChar, PChar, exp, 0, 8));
                     }
                 }
                 PChar->expChain.chainNumber++;
@@ -3651,9 +3675,9 @@ namespace charutils
             else if (exp > 0)
             {
                 if (onLimitMode)
-                    PChar->pushPacket(new CMessageDebugPacket(PChar, PChar, exp, 0, 371));
+                    PChar->pushPacket(new CMessageCombatPacket(PChar, PChar, exp, 0, 371));
                 else
-                    PChar->pushPacket(new CMessageDebugPacket(PChar, PChar, exp, 0, 8));
+                    PChar->pushPacket(new CMessageCombatPacket(PChar, PChar, exp, 0, 8));
             }
         }
 
@@ -3662,7 +3686,7 @@ namespace charutils
             //add limit points
             if (PChar->PMeritPoints->AddLimitPoints(exp))
             {
-                PChar->loc.zone->PushPacket(PChar, CHAR_INRANGE_SELF, new CMessageDebugPacket(PChar, PMob, PChar->PMeritPoints->GetMeritPoints(), 0, 50));
+                PChar->loc.zone->PushPacket(PChar, CHAR_INRANGE_SELF, new CMessageCombatPacket(PChar, PMob, PChar->PMeritPoints->GetMeritPoints(), 0, 50));
             }
         }
         else
@@ -3780,7 +3804,7 @@ namespace charutils
                 PChar->pushPacket(new CCharJobExtraPacket(PChar, true));
                 PChar->pushPacket(new CCharSyncPacket(PChar));
 
-                PChar->loc.zone->PushPacket(PChar, CHAR_INRANGE_SELF, new CMessageDebugPacket(PChar, PMob, PChar->jobs.job[PChar->GetMJob()], 0, 9));
+                PChar->loc.zone->PushPacket(PChar, CHAR_INRANGE_SELF, new CMessageCombatPacket(PChar, PMob, PChar->jobs.job[PChar->GetMJob()], 0, 9));
                 PChar->pushPacket(new CCharStatsPacket(PChar));
 
                 luautils::OnPlayerLevelUp(PChar);

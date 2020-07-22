@@ -3,6 +3,7 @@
 -----------------------------------------
 require("scripts/globals/ability")
 require("scripts/globals/gambits")
+require("scripts/globals/magic")
 require("scripts/globals/status")
 require("scripts/globals/trust")
 require("scripts/globals/weaponskillids")
@@ -25,19 +26,21 @@ function onSpellCast(caster, target, spell)
 end
 
 function onMobSpawn(mob)
+    tpz.trust.teamworkMessage(mob, {
+        [tpz.magic.spell.AYAME] = tpz.trust.message_offset.TEAMWORK_1,
+    })
+
     mob:addSimpleGambit(ai.t.SELF, ai.c.NOT_HAS_TOP_ENMITY, 0,
                         ai.r.JA, ai.s.SPECIFIC, tpz.ja.PROVOKE)
 
     mob:addSimpleGambit(ai.t.SELF, ai.c.TP_GTE, 1000,
                         ai.r.WS, ai.s.SPECIFIC, tpz.ws.BURNING_BLADE)
-
-    -- Naji is a WAR who uses a 1H Sword, so lower his MAIN_DMG_RATING (down from G.Axe levels)
-    local reduce_damage_by_percent = 30
-    mob:addMod(tpz.mod.MAIN_DMG_RATING, mob:getWeaponDmg() * (reduce_damage_by_percent / 100) * -1.0)
 end
 
 function onMobDespawn(mob)
+    tpz.trust.message(mob, tpz.trust.message_offset.DESPAWN)
 end
 
 function onMobDeath(mob)
+    tpz.trust.message(mob, tpz.trust.message_offset.DEATH)
 end

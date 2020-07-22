@@ -198,13 +198,13 @@ void CTrustController::DoRoamTick(time_point tick)
         m_Tick - m_CombatEndTime > 10s &&
         m_Tick - m_LastHealTickTime > 3s)
     {
-        if (POwner->Rest(0.03f))
+        if (POwner->health.hp != POwner->health.maxhp || POwner->health.mp != POwner->health.maxmp)
         {
-            m_LastHealTickTime = m_Tick;
-            POwner->updatemask |= UPDATE_HP;
-        }
-        else if (POwner->Rest(0.05f))
-        {
+            // recover 5% HP & MP
+            uint32 recoverHP = (uint32)(POwner->health.maxhp * 0.05);
+            uint32 recoverMP = (uint32)(POwner->health.maxmp * 0.05);
+            POwner->addHP(recoverHP);
+            POwner->addMP(recoverMP);
             m_LastHealTickTime = m_Tick;
             POwner->updatemask |= UPDATE_HP;
         }
@@ -213,7 +213,7 @@ void CTrustController::DoRoamTick(time_point tick)
 
 bool CTrustController::Ability(uint16 targid, uint16 abilityid)
 {
-    if (static_cast<CMobEntity*>(POwner)->PRecastContainer->HasRecast(RECAST_ABILITY, abilityid + 16, 0))
+    if (static_cast<CMobEntity*>(POwner)->PRecastContainer->HasRecast(RECAST_ABILITY, abilityid, 0))
     {
         return false;
     }

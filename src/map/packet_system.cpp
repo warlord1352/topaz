@@ -122,7 +122,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/
 #include "packets/menu_merit.h"
 #include "packets/merit_points_categories.h"
 #include "packets/message_basic.h"
-#include "packets/message_debug.h"
+#include "packets/message_combat.h"
 #include "packets/message_standard.h"
 #include "packets/message_system.h"
 #include "packets/party_define.h"
@@ -709,9 +709,7 @@ void SmallPacket0x01A(map_session_data_t* session, CCharEntity* PChar, CBasicPac
     case 0x09: // jobability
     {
         uint16 JobAbilityID = data.ref<uint16>(0x0C);
-        //if ((JobAbilityID < 496 && !charutils::hasAbility(PChar, JobAbilityID - 16)) || JobAbilityID >= 496 && !charutils::hasPetAbility(PChar, JobAbilityID - 512))
-        //    return;
-        PChar->PAI->Ability(TargID, JobAbilityID - 16);
+        PChar->PAI->Ability(TargID, JobAbilityID);
     }
     break;
     case 0x0B: // homepoint
@@ -1257,6 +1255,17 @@ void SmallPacket0x034(map_session_data_t* session, CCharEntity* PChar, CBasicPac
 
     if (PTarget != nullptr && PTarget->id == PChar->TradePending.id)
     {
+        if (!PChar->UContainer->IsSlotEmpty(tradeSlotID))
+        {
+            CItem* PCurrentSlotItem = PChar->UContainer->GetItem(tradeSlotID);
+            if (quantity != 0)
+            {
+                ShowError(CL_RED"SmallPacket0x034: Player %s trying to update trade quantity of a RESERVED item! [Item: %i | Trade Slot: %i] \n" CL_RESET, PChar->GetName(), PCurrentSlotItem->getID(), tradeSlotID);
+            }
+            PCurrentSlotItem->setReserve(0);
+            PChar->UContainer->ClearSlot(tradeSlotID);
+        }
+
         CItem* PItem = PChar->getStorage(LOC_INVENTORY)->GetItem(invSlotID);
         // We used to disable Rare/Ex items being added to the container, but that is handled properly else where now
         if (PItem != nullptr && PItem->getID() == itemID && quantity + PItem->getReserve() <= PItem->getQuantity())
@@ -5993,6 +6002,12 @@ void SmallPacket0x10A(map_session_data_t* session, CCharEntity* PChar, CBasicPac
     uint32 price = data.ref<uint32>(0x08);
 
     CItem* PItem = PChar->getStorage(LOC_INVENTORY)->GetItem(slotID);
+
+    if (PItem->getReserve() > 0)
+    {
+        ShowError(CL_RED"SmallPacket0x10A: Player %s trying to bazaar a RESERVED item! [Item: %i | Slot ID: %i] \n" CL_RESET, PChar->GetName(), PItem->getID(), slotID);
+        return;
+    }
 
     if ((PItem != nullptr) && !(PItem->getFlag() & ITEM_FLAG_EX) && (!PItem->isSubType(ITEM_LOCKED) || PItem->getCharPrice() != 0))
     {

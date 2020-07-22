@@ -4,7 +4,7 @@
 --
 -----------------------------------
 local ID = require("scripts/zones/Batallia_Downs/IDs")
-require("scripts/globals/icanheararainbow");
+require("scripts/quests/i_can_hear_a_rainbow")
 require("scripts/globals/chocobo_digging");
 require("scripts/globals/missions");
 require("scripts/globals/zone");
@@ -34,22 +34,25 @@ function onInitialize(zone)
     for i = 0, 7 do
         registerRegionAroundNPC(zone, ID.npc.RAPTOR_FOOD_BASE + i, i + 1)
     end
-    registerRegionAroundNPC(zone, ID.npc.SYRILLIA, 8)
+    registerRegionAroundNPC(zone, ID.npc.SYRILLIA, 9)
 end
 
 function onZoneIn(player, prevZone)
     local cs = -1;
 
-    if player:getCharVar("[QUEST]FullSpeedAhead") == 1 then
+    if player:getCharVar("[QUEST]FullSpeedAhead") == 1 then -- Normal Mode
         player:addStatusEffect(tpz.effect.FULL_SPEED_AHEAD, 0, 3, tpz.fsa.duration)
+        return -1
+    elseif player:getCharVar("[QUEST]FullSpeedAhead") == 2 then -- Easy Mode
+        player:addStatusEffect(tpz.effect.FULL_SPEED_AHEAD, 1, 3, tpz.fsa.duration)
         return -1
     end
 
     if (player:getXPos() == 0 and player:getYPos() == 0 and player:getZPos() == 0) then
-        player:setPos( -693.609, -14.583, 173.59, 30);
+        player:setPos(-693.609, -14.583, 173.59, 30);
     end
 
-    if (triggerLightCutscene(player)) then -- Quest: I Can Hear A Rainbow
+    if quests.rainbow.onZoneIn(player) then
         cs = 901;
     elseif (player:getCurrentMission(WINDURST) == tpz.mission.id.windurst.VAIN and player:getCharVar("MissionStatus") == 1) then
         cs = 903;
@@ -70,7 +73,7 @@ end;
 
 function onEventUpdate(player, csid, option)
     if (csid == 901) then
-        lightCutsceneUpdate(player); -- Quest: I Can Hear A Rainbow
+        quests.rainbow.onEventUpdate(player)
     end
 end;
 
@@ -85,5 +88,11 @@ function onEventFinish(player, csid, option)
         end
     elseif csid == 24 then
         tpz.fsa.completeGame(player)
+    elseif csid == 26 and option == 0 then
+        player:setCharVar("[QUEST]FullSpeedAhead", 1)
+        player:setPos(475, 8.8, -159, 128, 105)
+    elseif csid == 26 and option == 1 then
+        player:setCharVar("[QUEST]FullSpeedAhead", 2)
+        player:setPos(475, 8.8, -159, 128, 105)
     end
 end;

@@ -125,6 +125,7 @@
 #include "../packets/menu_merit.h"
 #include "../packets/menu_raisetractor.h"
 #include "../packets/message_basic.h"
+#include "../packets/message_combat.h"
 #include "../packets/message_name.h"
 #include "../packets/message_special.h"
 #include "../packets/message_standard.h"
@@ -534,6 +535,39 @@ inline int32 CLuaBaseEntity::messageSystem(lua_State* L)
         param1 = (uint32)lua_tointeger(L, 3);
 
     ((CCharEntity*)m_PBaseEntity)->pushPacket(new CMessageSystemPacket(param0, param1, messageID));
+    return 0;
+}
+
+/************************************************************************
+*  Function: messageCombat(...)
+*  Purpose : Various combat related messages are ended with this packet
+*  Example : master:messageCombat(mob, offset + id, 0, 711)
+*  Notes   :
+************************************************************************/
+int32 CLuaBaseEntity::messageCombat(lua_State* L)
+{
+    TPZ_DEBUG_BREAK_IF(m_PBaseEntity == nullptr);
+    TPZ_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_PC);
+
+    CCharEntity* PChar = (CCharEntity*)m_PBaseEntity;
+
+    CBaseEntity* PSpeaker;
+    if (!lua_isnil(L, 1) && lua_isuserdata(L, 1))
+    {
+        CLuaBaseEntity* PLuaBaseEntity = Lunar<CLuaBaseEntity>::check(L, 1);
+        PSpeaker = PLuaBaseEntity->m_PBaseEntity;
+    }
+    else
+    {
+        PSpeaker = m_PBaseEntity;
+    }
+
+    auto p0 = (int32)lua_tointeger(L, 2);
+    auto p1 = (int32)lua_tointeger(L, 3);
+    auto message = (int16)lua_tointeger(L, 4);
+
+    PChar->pushPacket(new CMessageCombatPacket(PSpeaker, PChar, p0, p1, message));
+
     return 0;
 }
 
@@ -2468,10 +2502,12 @@ inline int32 CLuaBaseEntity::getAngle(lua_State *L)
 }
 
 /************************************************************************
-*  Function: getZone()
+*  Function: getZone(isZoning)
 *  Purpose : Returns a pointer to a zone object?
 *  Example : if (player:getZone() == mob:getZone()) then
 *  Notes   : To Do: I don't think some scripts are using this correctly...
+*  Optional isZoning parameter will return player's destination zone if
+*  they are in the process of zoning (for use in onZoneIn)
 ************************************************************************/
 
 inline int32 CLuaBaseEntity::getZone(lua_State *L)
@@ -2485,6 +2521,17 @@ inline int32 CLuaBaseEntity::getZone(lua_State *L)
         lua_gettable(L, -2);
         lua_insert(L, -2);
         lua_pushlightuserdata(L, (void*)m_PBaseEntity->loc.zone);
+        lua_pcall(L, 2, 1, 0);
+    }
+    else if (m_PBaseEntity->loc.destination && !lua_isnil(L, 1) && lua_isboolean(L, 1) && (bool)lua_toboolean(L, 1) == true)
+    {
+        auto PZone = zoneutils::GetZone(m_PBaseEntity->loc.destination);
+
+        lua_getglobal(L, CLuaZone::className);
+        lua_pushstring(L, "new");
+        lua_gettable(L, -2);
+        lua_insert(L, -2);
+        lua_pushlightuserdata(L, (void*)PZone);
         lua_pcall(L, 2, 1, 0);
     }
     else
@@ -3113,7 +3160,7 @@ inline int32 CLuaBaseEntity::getTeleportMenu(lua_State *L)
         return 0;
     }
 
-	lua_newtable(L);
+    lua_newtable(L);
 
     for (uint8 x = 0; x < 10; x++)
     {
@@ -3798,7 +3845,9 @@ inline int32 CLuaBaseEntity::createShop(lua_State *L)
 /************************************************************************
 *  Function: addShopItem()
 *  Purpose : Adds an item and established price to an existing shop
-*  Example : addShopItem(512,8000)
+*          : Optionally accepts a GuildID + Guild Rank requirement
+*  Example : addShopItem(512, 8000)                                                   --Regular item
+*          : addShopItem(512, 8000, tpz.skill.CLOTHCRAFT, tpz.craftRank.JOURNEYMAN)   --Guild-rank locked item
 *  Notes   : Use with createShop() - 16 Max Items in Shop
 ************************************************************************/
 
@@ -3807,16 +3856,23 @@ inline int32 CLuaBaseEntity::addShopItem(lua_State *L)
     TPZ_DEBUG_BREAK_IF(m_PBaseEntity == nullptr);
     TPZ_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_PC);
 
-    TPZ_DEBUG_BREAK_IF(lua_isnil(L, -1) || !lua_isnumber(L, -1));
-    TPZ_DEBUG_BREAK_IF(lua_isnil(L, -2) || !lua_isnumber(L, -2));
+    TPZ_DEBUG_BREAK_IF(lua_isnil(L, 1) || !lua_isnumber(L, 1));
+    TPZ_DEBUG_BREAK_IF(lua_isnil(L, 2) || !lua_isnumber(L, 2));
 
-    uint16 itemID = (uint16)lua_tonumber(L, -2);
-    uint32 price = (uint32)lua_tonumber(L, -1);
+    uint16 itemID = (uint16)lua_tonumber(L, 1);
+    uint32 price = (uint32)lua_tonumber(L, 2);
 
     uint8 slotID = ((CCharEntity*)m_PBaseEntity)->Container->getItemsCount();
-
     ((CCharEntity*)m_PBaseEntity)->Container->setItem(slotID, itemID, 0, price);
 
+    if(lua_isnumber(L, 3) && lua_isnumber(L, 4))
+    {
+        uint8 guildID = (uint8)lua_tonumber(L, 3);
+        uint16 guildRank = (uint16)lua_tonumber(L, 4);
+
+        ((CCharEntity*)m_PBaseEntity)->Container->setGuildID(slotID, guildID);
+        ((CCharEntity*)m_PBaseEntity)->Container->setGuildRank(slotID, guildRank);
+    }
     return 0;
 }
 
@@ -3862,7 +3918,7 @@ inline int32 CLuaBaseEntity::breakLinkshell(lua_State* L)
     bool found = false;
 
     int32 ret = Sql_Query(SqlHandle, "SELECT broken, linkshellid FROM linkshells WHERE name = '%s'", lsname);
-	if( ret != SQL_ERROR && Sql_NumRows(SqlHandle) != 0 && Sql_NextRow(SqlHandle) == SQL_SUCCESS)
+    if( ret != SQL_ERROR && Sql_NumRows(SqlHandle) != 0 && Sql_NextRow(SqlHandle) == SQL_SUCCESS)
     {
         uint8 broken = Sql_GetUIntData(SqlHandle,0);
         if (broken)
@@ -4918,6 +4974,22 @@ inline int32 CLuaBaseEntity::setCampaignAllegiance(lua_State *L)
     PChar->profile.campaign_allegiance = (uint8)lua_tointeger(L, 1);
     charutils::SaveCampaignAllegiance(PChar);
     return 0;
+}
+
+/************************************************************************
+*  Function: isSeekingParty()
+*  Purpose : Returns true if a player is seeking a party
+*  Example : if player:isSeekingParty() then
+*  Notes   :
+************************************************************************/
+
+inline int32 CLuaBaseEntity::isSeekingParty(lua_State* L)
+{
+    TPZ_DEBUG_BREAK_IF(m_PBaseEntity == nullptr);
+    TPZ_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_PC);
+
+    lua_pushboolean(L, (((CCharEntity*)m_PBaseEntity)->nameflags.flags & FLAG_INVITE));
+    return 1;
 }
 
 /************************************************************************
@@ -6557,7 +6629,7 @@ inline int32 CLuaBaseEntity::completeMission(lua_State *L)
 *  Function: setMissionLogEx()
 *  Purpose : Sets mission log extra data to correctly track progress in branching missions.
 *  Example : player:setMissionLogEx(tpz.mission.log_id.COP, tpz.mission.logEx.ULMIA, 14)
-*  Notes   : 
+*  Notes   :
 ************************************************************************/
 
 inline int32 CLuaBaseEntity::setMissionLogEx(lua_State *L)
@@ -9083,6 +9155,30 @@ inline int32 CLuaBaseEntity::getLeaderID(lua_State* L)
 }
 
 /************************************************************************
+*  Function: getPartyLastMemberJoinedTime()
+*  Purpose : Get the epoch time point in seconds that the last PC joined the party (if any)
+*  Example : seconds_since_last_member_joined = os.time() - player:getPartyLastMemberJoinedTime()
+*  Notes   : 
+************************************************************************/
+
+int32 CLuaBaseEntity::getPartyLastMemberJoinedTime(lua_State* L)
+{
+    TPZ_DEBUG_BREAK_IF(m_PBaseEntity == nullptr);
+    TPZ_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_PC);
+
+    CCharEntity* PChar = ((CCharEntity*)m_PBaseEntity);
+
+    if (PChar->PParty != nullptr)
+    {
+        lua_pushnumber(L, PChar->PParty->GetTimeLastMemberJoined());
+        return 1;
+    }
+
+    lua_pushnumber(L, 0);
+    return 1;
+}
+
+/************************************************************************
 *  Function: reloadParty()
 *  Purpose : Display a new party in the event of alliance form/disband
 *  Example : Creates/Destroys the other parties being displayed
@@ -10195,7 +10291,7 @@ int32 CLuaBaseEntity::checkImbuedItems(lua_State* L)
 *  Function: isDualWielding()
 *  Purpose : Returns true if entity is wielding two weapons
 *  Example : if player:isDualWielding() then
-*  Notes   : 
+*  Notes   :
 ************************************************************************/
 
 inline int32 CLuaBaseEntity::isDualWielding(lua_State* L)
@@ -14552,6 +14648,7 @@ Lunar<CLuaBaseEntity>::Register_t CLuaBaseEntity::methods[] =
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,messagePublic),
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,messageSpecial),
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,messageSystem),
+    LUNAR_DECLARE_METHOD(CLuaBaseEntity,messageCombat),
 
     // Variables
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,getCharVar),
@@ -14737,6 +14834,7 @@ Lunar<CLuaBaseEntity>::Register_t CLuaBaseEntity::methods[] =
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,getCampaignAllegiance),
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,setCampaignAllegiance),
 
+    LUNAR_DECLARE_METHOD(CLuaBaseEntity,isSeekingParty),
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,getNewPlayer),
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,setNewPlayer),
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,getMentor),
@@ -14914,6 +15012,7 @@ Lunar<CLuaBaseEntity>::Register_t CLuaBaseEntity::methods[] =
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,getPartyMember),
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,getPartyLeader),
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,getLeaderID),
+    LUNAR_DECLARE_METHOD(CLuaBaseEntity,getPartyLastMemberJoinedTime),
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,forMembersInRange),
 
     LUNAR_DECLARE_METHOD(CLuaBaseEntity,addPartyEffect),
