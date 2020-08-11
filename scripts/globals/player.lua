@@ -100,7 +100,7 @@ local function CharCreate(player)
     end
 
     -- set initial level cap
-    if INITIAL_LEVEL_CAP ~= 50 then
+    if INITIAL_LEVEL_CAP ~= 70 then
         player:levelCap(INITIAL_LEVEL_CAP)
     end
 
