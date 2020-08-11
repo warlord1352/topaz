@@ -8,6 +8,7 @@ require("scripts/quests/i_can_hear_a_rainbow")
 require("scripts/globals/conquest")
 require("scripts/globals/keyitems")
 require("scripts/globals/zone")
+require("scripts/globals/settings")
 -----------------------------------
 
 function onInitialize(zone)
@@ -27,7 +28,7 @@ function onZoneIn(player, prevZone)
         player:setPos(-136.287, -23.268, 137.302, 91)
     end
 
-    if not player:hasKeyItem(tpz.ki.VIAL_OF_SHROUDED_SAND) and player:getRank() >= 6 and player:getMainLvl() >= 65 and bit.band(player:getCharVar("Dynamis_Status"), 1) == 0 then
+    if not player:hasKeyItem(tpz.ki.VIAL_OF_SHROUDED_SAND) and player:getRank() >= 6 and player:getMainLvl() >= 50 and bit.band(player:getCharVar("Dynamis_Status"), 1) == 0 then
         player:setCharVar("Dynamis_Status", 1)
         cs = 13
     elseif quests.rainbow.onZoneIn(player) then
