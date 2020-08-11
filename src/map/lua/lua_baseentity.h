@@ -182,6 +182,7 @@ public:
 
     // Items
     int32 getEquipID(lua_State*);            // Gets the Item Id of the item in specified slot
+    int32 getEquippedItem(lua_State *);      // Returns the item object from specified slot
     int32 hasItem(lua_State*);               // Check to see if Entity has item in inventory (hasItem(itemNumber))
     int32 addItem(lua_State*);               // Add item to Entity inventory (additem(itemNumber,quantity))
     int32 delItem(lua_State*);
@@ -598,6 +599,7 @@ public:
     int32 getTrustID(lua_State*);
     int32 addSimpleGambit(lua_State*);
     int32 addFullGambit(lua_State*);
+    int32 trustPartyMessage(lua_State*);
 
     int32 isJugPet(lua_State*);              // If the entity has a pet, test if it is a jug pet.
     int32 hasValidJugPetItem(lua_State*);

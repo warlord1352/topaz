@@ -38,7 +38,7 @@ function onTrigger(player)
         player:addMod(tpz.mod.RDEF,2500)
         player:addMod(tpz.mod.DEF,2500)
         player:addMod(tpz.mod.MDEF,2500)
-		--player.addMod(tpz.mod.STR,99)
+		
 
         -- Heal the player from the new buffs..
         player:addHP( 50000 )
