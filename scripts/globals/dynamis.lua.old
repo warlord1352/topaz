@@ -158,7 +158,7 @@ local entryInfo =
                    player:hasKeyItem(tpz.ki.DYNAMIS_BUBURIMU_SLIVER) and
                    player:hasKeyItem(tpz.ki.DYNAMIS_QUFIM_SLIVER) and
                    player:hasKeyItem(tpz.ki.DYNAMIS_VALKURM_SLIVER) and
-                  (player:hasCompletedMission(COP, tpz.mission.id.cop.DARKNESS_NAMED) or FREE_COP_DYNAMIS == 1)
+                  (player:hasCompletedMission(COP,tpz.mission.id.cop.DARKNESS_NAMED) or FREE_COP_DYNAMIS == 1)
         end,
     },
 }
@@ -302,19 +302,19 @@ dynamis.entryNpcOnTrigger = function(player, npc)
         player:startEvent(info.csWin, info.winKI)
 
     -- dynamis entry
-    elseif not info.reqs or info.reqs(player) then
-        local realDay = os.time()
-        local dynaWaitxDay = player:getCharVar("dynaWaitxDay")
+    --elseif not info.reqs or info.reqs(player) then
+        --local realDay = os.time()
+        --local dynaWaitxDay = player:getCharVar("dynaWaitxDay")
 
-        if player:getMainLvl() < DYNA_LEVEL_MIN then
+        --if player:getMainLvl() < DYNA_LEVEL_MIN then
             player:messageSpecial(ID.text.PLAYERS_HAVE_NOT_REACHED_LEVEL, DYNA_LEVEL_MIN)
-        elseif (dynaWaitxDay + BETWEEN_2DYNA_WAIT_TIME * 60 * 60) < realDay then
+        --elseif (dynaWaitxDay + BETWEEN_2DYNA_WAIT_TIME * 60 * 60) < realDay then
             -- params: bit, cutscene option, Prismatic Hourglass KI, sJob option, junk, Shrouded Sand KI, Timeless Hourglass item ID, Perpetual Hourglass item ID
             player:startEvent(info.csDyna, info.csBit, arg3(player, info.csBit), tpz.ki.PRISMATIC_HOURGLASS, 1, 0, tpz.ki.VIAL_OF_SHROUDED_SAND, 4236, 4237)
-        else
-            local dayRemaining = math.floor(((dynaWaitxDay + BETWEEN_2DYNA_WAIT_TIME * 60 * 60) - realDay) / 3456)
-            player:messageSpecial(ID.text.YOU_CANNOT_ENTER_DYNAMIS, dayRemaining, info.csBit)
-        end
+        --else
+            --local dayRemaining = math.floor(((dynaWaitxDay + BETWEEN_2DYNA_WAIT_TIME * 60 * 60) - realDay) / 3456)
+            --player:messageSpecial(ID.text.YOU_CANNOT_ENTER_DYNAMIS, dayRemaining, info.csBit)
+        --end
 
     -- standard dialog
     else
@@ -339,29 +339,29 @@ dynamis.entryNpcOnEventFinish = function(player, csid, option)
         player:setCharVar(info.winVar, 0)
 
     -- dynamis entry
-    elseif csid == info.csDyna then
-        player:setMaskBit("Dynamis_Status", info.csBit, true)
+    --elseif csid == info.csDyna then
+      --  player:setMaskBit("Dynamis_Status", info.csBit, true)
 
-        if option == 0 or option == 1 then
-            player:setCharVar("Dynamis_subjob", option)
-            player:setCharVar("Dynamis_Entry", 1)
+        --if option == 0 or option == 1 then
+          --  player:setCharVar("Dynamis_subjob", option)
+            --player:setCharVar("Dynamis_Entry", 1)
 
-            local realDay = os.time()
-            if DYNA_MIDNIGHT_RESET then
-                realDay = getMidnight() - 86400
-            end
-            local dynaWaitxDay = player:getCharVar("dynaWaitxDay")
+            --local realDay = os.time()
+            --if DYNA_MIDNIGHT_RESET then
+            --    realDay = getMidnight() - 86400
+            --end
+            --local dynaWaitxDay = player:getCharVar("dynaWaitxDay")
 
-            if
-                (dynaWaitxDay + BETWEEN_2DYNA_WAIT_TIME * 60 * 60) < realDay and
-                not player:hasKeyItem(tpz.ki.RHAPSODY_IN_AZURE)
-            then
-                player:setCharVar("dynaWaitxDay", realDay)
-            end
+            --if
+            --    (dynaWaitxDay + BETWEEN_2DYNA_WAIT_TIME * 1 * 1) < realDay and
+                --not player:hasKeyItem(tpz.ki.RHAPSODY_IN_AZURE)
+            --then
+                --player:setCharVar("dynaWaitxDay", realDay)
+            --end
 
-            player:setPos(unpack(info.enterPos))
-        end
-    end
+            --player:setPos(unpack(info.enterPos))
+        --end
+    --end
 end
 
 dynamis.zoneOnInitialize = function(zone)
@@ -737,7 +737,7 @@ function dynamis.procMonster(mob, player)
         end
         local extensions = dynamis.getExtensions(player)
         if extensions > 2 then
-            if player:getSubJob() == tpz.job.NONE and math.random(0, 99) == 0 then
+            if player:getSubJob() == tpz.job.NONE and math.random(0,99) == 0 then
                 mob:setLocalVar("dynamis_proc", 4)
                 mob:weaknessTrigger(3)
                 mob:addStatusEffect(tpz.effect.TERROR, 0, 0, 30)

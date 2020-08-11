@@ -101,9 +101,9 @@ LandKingSystem_NQ = 2
 LandKingSystem_HQ = 2
 
 -- DYNAMIS SETTINGS
-    BETWEEN_2DYNA_WAIT_TIME = 24       -- Hours before player can re-enter Dynamis. Default is 1 Earthday (24 hours).
-        DYNA_MIDNIGHT_RESET = true     -- if true, makes the wait time count by number of server midnights instead of full 24 hour intervals
-             DYNA_LEVEL_MIN = 65       -- level min for entering in Dynamis
+    BETWEEN_2DYNA_WAIT_TIME = 1       -- Hours before player can re-enter Dynamis. Default is 1 Earthday (24 hours).
+        DYNA_MIDNIGHT_RESET = false     -- if true, makes the wait time count by number of server midnights instead of full 24 hour intervals
+             DYNA_LEVEL_MIN = 50       -- level min for entering in Dynamis
     TIMELESS_HOURGLASS_COST = 500000   -- refund for the timeless hourglass for Dynamis.
    PRISMATIC_HOURGLASS_COST = 50000    -- cost of the prismatic hourglass for Dynamis.
      CURRENCY_EXCHANGE_RATE = 100      -- X Tier 1 ancient currency -> 1 Tier 2, and so on.  Certain values may conflict with shop items.  Not designed to exceed 198.
