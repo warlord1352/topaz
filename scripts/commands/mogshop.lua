@@ -1,22 +1,20 @@
---------------------------------------------------------------
--- func: !mogshop <page number>
--- auth: forgottenandlost
--- desc: opens the custom moogle shop menu anywhere in the world
---------------------------------------------------------------
+-----------------------------------
+-- !summershop cmd
+--command for summer clothing shopping!
+-- !pos -305.775 -10.319 -152.173 235
+-----------------------------------
+require("scripts/globals/shop")
 
 cmdprops =
 {
-    permission = 1,
-    parameters = "i"
-};
+    permission = 0,
+    parameters = "s"
+}
 
-function onTrigger(player,page)
-    if (page == 0 or page == nil) then
-        player:PrintToPlayer( "1: Crystal Depot, 2: Pharmacy, 3: MogDonalds");
-        player:PrintToPlayer( "4: Tools, 5: National Hero Specials, 6: Mighty Hero Specials");
-        player:PrintToPlayer( "7: Chains-Breaker Specials");
-    elseif (page == 1) then -- HQ Crystals
-        local stock_1 =
+function onTrigger(player, shop)
+    local stock =
+    {
+        ["crystals"] =
         {
             4238,   5000,   -- HQ Fire Crystal
             4239,   5000,   -- HQ Ice Crystal
@@ -26,11 +24,8 @@ function onTrigger(player,page)
             4243,   5000,   -- HQ Water Crystal
             4244,   5000,   -- HQ Light Crystal
             4245,   5000    -- HQ Dark Crystal
-        };
-        show.tpz.Shop(player, STATIC, stock_1);
-        player:PrintToPlayer( "Crystal Depot: Welcome, Kupo!");
-    elseif (page == 2) then -- Pharmacy
-        local stock_2 =
+        },
+        ["potions"] =
         {
             4148,   450,     -- Antidote
             4154,   1000,    -- Holy Water
@@ -47,11 +42,8 @@ function onTrigger(player,page)
             5878,   25000,   -- Amnesia Screen
             5879,   25000,   -- Doom Screen
             5880,   25000    -- Poison Screen
-        };
-        showShop(player, STATIC, stock_2);
-        player:PrintToPlayer( "Pharmacy: Welcome, Kupo!");
-    elseif (page == 3) then -- MogDonalds
-        local stock_3 =
+        },
+        ["food"] =
         {
             4271,   2499,   -- Rice Dumpling
             4381,   2100,   -- Meat Mithkabob
@@ -67,11 +59,8 @@ function onTrigger(player,page)
             4424,   1100,   -- Melon Juice
             4422,   499,    -- Orange Juice
 			6465,   9999    -- Behemoth Steak+1
-        };
-        showShop(player, STATIC, stock_3);
-        player:PrintToPlayer( "MogDonalds: Welcome, Kupo!");
-    elseif (page == 4) then
-        local stock_4 =
+        },
+        ["tools"] =
         {
             605,    499,     -- Pickaxe
             1021,   499,     -- Hatchet
@@ -86,17 +75,10 @@ function onTrigger(player,page)
             5868,   25000,   -- Toolbag (Shikanofuda)
             5869,   25000,   -- Toolbag (Chonofuda)
             1022,   5000     -- Thief's Tools
-        };
-        showShop(player, STATIC, stock_4);
-        player:PrintToPlayer( "Tool shop: Welcome, Kupo!");
-    elseif (page == 5) then -- National Hero Specials
-        local S_clear = player:hasCompletedMission(SANDORIA,THE_HEIR_TO_THE_LIGHT);
-        local B_clear = player:hasCompletedMission(BASTOK,WHERE_TWO_PATHS_CONVERGE);
-        local W_clear = player:hasCompletedMission(WINDURST,MOON_READING);
-        if (S_clear == true or B_clear == false or W_clear == true) then
-            local stock_5a =
-            {
-                5717,   1,        -- M&P Doner Kebab
+        },
+        ["specials"] =
+        {
+				5717,   1,        -- M&P Doner Kebab
                 5639,   5000,     -- M&P Chicken
                 5640,   5000,     -- M&P Cracker
                 5641,   5000,     -- M&P Dumpling
@@ -111,37 +93,10 @@ function onTrigger(player,page)
                 1258,   500000,   -- Earth Ore
                 1259,   500000,   -- Lightning Ore
                 1260,   500000,   -- Water Ore
-            };
-            showShop(player, STATIC, stock_5a);
-            player:PrintToPlayer( "National Hero Specials: Welcome, Kupo!");
-        elseif (S_clear == true or B_clear == true or W_clear == true) then
-            local stock_5b =
-            {
-                5717,   1,       -- M&P Doner Kebab
-                5639,   5000,    -- M&P Chicken
-                5640,   5000,    -- M&P Cracker
-                5641,   5000,    -- M&P Dumpling
-                268,    10000,   -- Nomad Moogle Statue
-                269,    10000,   -- Shadow Lord Statue
-            };
-            showShop(player, STATIC, stock_5b);
-            player:PrintToPlayer( "National Hero Specials: Welcome, Kupo!");
-        elseif (player:getRank() >= 5) then
-            local stock_5c =
-            {
-                5717,   1,       -- M&P Doner Kebab
-                268,    10000,   -- Nomad Moogle Statue
-            };
-            showShop(player, STATIC, stock_5c);
-            player:PrintToPlayer( "There isn't much in stock for low rank adventurers, Kupo!");
-        else
-            player:PrintToPlayer( "You need a higher rank to unlock this, Kupo!");
-        end
-    elseif (page == 6) then -- Mighty Hero Specials
-        if (player:hasCompletedMission(ZILART,AWAKENING) == true) then
-            local stock_6 =
-            {
-                272,    20000,    -- Ark Angel HM. Statue
+        },
+		["zilart"] = 
+		{
+				272,    20000,    -- Ark Angel HM. Statue
                 273,    20000,    -- Ark Angel EV. Statue
                 274,    20000,    -- Ark Angel TT. Statue
                 275,    20000,    -- Ark Angel MR. Statue
@@ -153,28 +108,21 @@ function onTrigger(player,page)
                 18464,  20000,    -- Ark Tachi
                 1550,   50000,    -- Ark Pentasphere
                 1261,   500000    -- Light Ore
-            };
-            showShop(player, STATIC, stock_6);
-            player:PrintToPlayer( "Mighty Hero Specials: Welcome, Kupo!");
-        else
-            player:PrintToPlayer( "Clear 'Rise of the Zilart' to unlock this, Kupo!");
-        end
-    elseif (page == 7) then -- Chains-Breaker Specials
-        if (player:hasCompletedMission(COP,DAWN) == true) then
-            local stock_7 =
-            {
+		},
+		["earrings"] = 
+		{
+				14739,  500000,   -- suppanomimi
+				14740,  500000,   -- knights earring
+				14741,  500000,   -- abyssal earring
+				14742,  500000,   -- beastly earring
+				14743,  500000,   -- bushinomimi
+		},
+		["cop"] = 
+		{
                 14657,  20000,    -- Ducal Guard's Ring
                 1262,   500000,   -- Dark Ore
-            };
-            showShop(player, STATIC, stock_7);
-            player:PrintToPlayer( "Chains-Breaker Specials: Welcome, Kupo!");
-        else
-            player:PrintToPlayer( "Clear 'Chains of Promathia' to unlock this, Kupo!");
-        end
-    else
-        -- local Mog = 16982044;
-        -- message = "Test!";
-        -- SpoofSay(Mog,player:getID(),message);
-        player:PrintToPlayer( string.format( "The MogShop catalog doesn't have a page %i, Kupo!", page ) );
-    end
-end;
+        },
+    }
+
+    tpz.shop.general(player, stock[shop])
+end
