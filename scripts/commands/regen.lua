@@ -75,7 +75,7 @@ function onTrigger(player)
 		-- regain
 		player:addStatusEffect(tpz.effect.REGAIN,10,1,0);
         -- haste
-        player:addStatusEffect(tpz.effect.HASTE,150,0,0);
+        player:addStatusEffect(tpz.effect.HASTE,154,0,0);
         -- refresh
         player:addStatusEffect(tpz.effect.REFRESH,5,0,0);
 		-- reraise
