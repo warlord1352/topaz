@@ -18,6 +18,7 @@ function onEffectGain(target,effect)
 	target:addMod(tpz.mod.RERAISE_I, 1)
 	target:addMod(tpz.mod.REFRESH, 1)
 	target:addMod(tpz.mod.REGEN, 1)
+end
 
 function onEffectGain(target, effect)
     target:addLatent(tpz.latent.SIGNET_BONUS, 0, tpz.mod.DEF, 15)
@@ -32,6 +33,7 @@ function onEffectLose(target,effect)
 	target:delMod(tpz.mod.RERAISE_I, 1)
 	target:addMod(tpz.mod.REFRESH, 1)
 	target:addMod(tpz.mod.REGEN, 1)
+end
 
 function onEffectLose(target, effect)
 
