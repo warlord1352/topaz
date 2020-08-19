@@ -1,12 +1,16 @@
+---------------------------------------------------------------------------------------------------
+-- func: signet
+-- desc: applied fresh signet
+---------------------------------------------------------------------------------------------------
+
+require("scripts/globals/status")
+
 cmdprops =
 {
     permission = 1,
-    parameters = ""
-};
+    parameters = "ssssss"
+}
 
-local word  = "";
-function onTrigger(player, word)
-
-if (word == "signet") then
+function onTrigger(player, status)
 	player:addStatusEffect(tpz.effect.SIGNET)
 end
