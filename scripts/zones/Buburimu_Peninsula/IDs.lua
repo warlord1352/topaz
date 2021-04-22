@@ -17,6 +17,9 @@ zones[tpz.zone.BUBURIMU_PENINSULA] =
         KEYITEM_OBTAINED               = 6426,  -- Obtained key item: <keyitem>.
         KEYITEM_LOST                   = 6427,  -- Lost key item: <keyitem>.
         FELLOW_MESSAGE_OFFSET          = 6452,  -- I'm ready. I suppose.
+        CARRIED_OVER_POINTS            = 7034, -- You have carried over <number> login point[/s].
+        LOGIN_CAMPAIGN_UNDERWAY        = 7035, -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!<space>
+        LOGIN_NUMBER                   = 7036, -- In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.
         CONQUEST_BASE                  = 7084,  -- Tallying conquest results...
         BEASTMEN_BANNER                = 7165,  -- There is a beastmen's banner.
         FIVEOFSPADES_DIALOG            = 7243,  -- GiMmefIvE! FiVe isA cArdIanOF WiN-DuRst! FIvEiS OnpA-tRol!
@@ -45,7 +48,7 @@ zones[tpz.zone.BUBURIMU_PENINSULA] =
         COMMON_SENSE_SURVIVAL          = 12307, -- It appears that you have arrived at a new survival guide provided by the Adventurers' Mutual Aid Network. Common sense dictates that you should now be able to teleport here from similar tomes throughout the world.
     },
     mob =
-    {   
+    {
         BACKOO        = 17260613,
         HELLDIVER_PH  =
         {

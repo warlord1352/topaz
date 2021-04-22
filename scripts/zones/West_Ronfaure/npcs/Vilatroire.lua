@@ -23,7 +23,7 @@ function onTrigger(player, npc)
     local questAdvancedTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK)
 
     if questIntroToTeamwork == QUEST_AVAILABLE and sandyFame >= 2 then
-         player:startEvent(135) -- Starts first quest - 6 members same alliance
+        player:startEvent(135) -- Starts first quest - 6 members same alliance
     elseif questIntroToTeamwork == QUEST_AVAILABLE and sandyFame < 2 then
         player:startEvent(134) -- You don't have the requirements to start the first quest
     elseif questIntroToTeamwork == QUEST_ACCEPTED then
@@ -50,11 +50,11 @@ end
 function onEventUpdate(player, csid, option)
     -- csid 129 happens for both quests
     if csid == 129 then
-        local questIntroToTeamwork = player:getQuestStatus(SANDORIA,tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK)
-        local questIntermediateTeamwork = player:getQuestStatus(SANDORIA,tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK)
-        local questAdvancedTeamwork = player:getQuestStatus(SANDORIA,tpz.quest.id.sandoria.ADVANCED_TEAMWORK)
+        local questIntroToTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK)
+        local questIntermediateTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK)
+        local questAdvancedTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK)
 
-        -- newer versions of these quests only require a party of 2. 
+        -- newer versions of these quests only require a party of 2.
         -- older versions require all 6
         local partySizeRequirement = 2
 
@@ -68,7 +68,7 @@ function onEventUpdate(player, csid, option)
         if #party >= partySizeRequirement then
 
             for key, member in pairs(party) do
-            	local mRace = member:getRace()
+                local mRace = member:getRace()
 
                 if member:getZoneID() ~= player:getZoneID() or member:checkDistance(player) > 15 then
                     player:updateEvent(1) -- member not in zone or range
@@ -84,7 +84,7 @@ function onEventUpdate(player, csid, option)
                         partySameRaceCount = partySameRaceCount + 1
                     elseif (pRace == tpz.race.TARU_M or pRace == tpz.race.TARU_F) and (mRace == tpz.race.TARU_M or mRace == tpz.race.TARU_F) then
                         partySameRaceCount = partySameRaceCount + 1
-                    elseif pRace == tpz.race.GALKA and mRace == tpz.race.GALKA then 
+                    elseif pRace == tpz.race.GALKA and mRace == tpz.race.GALKA then
                         partySameRaceCount = partySameRaceCount + 1
                     elseif pRace == tpz.race.MITHRA and mRace == tpz.race.MITHRA then
                         partySameRaceCount = partySameRaceCount + 1
@@ -108,7 +108,7 @@ function onEventUpdate(player, csid, option)
                     player:setLocalVar("intermedTmwrk_pass", 1)
                     player:updateEvent(15, 2) -- race requirements met
                 else
-                    
+
                     player:updateEvent(4) -- not the same race
                 end
             elseif questAdvancedTeamwork == QUEST_ACCEPTED then
@@ -153,12 +153,12 @@ function onEventFinish(player, csid, option)
         end
     elseif csid == 131 and option == 1 then
         -- 131 is the third and last quest
-        player:addQuest(SANDORIA,tpz.quest.id.sandoria.ADVANCED_TEAMWORK)
+        player:addQuest(SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK)
     elseif csid == 133 and option == 1 then
         -- 133 is the second quest
-        player:addQuest(SANDORIA,tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK)
+        player:addQuest(SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK)
     elseif csid == 135 and option == 1 then
         -- 135 is the first quest
-        player:addQuest(SANDORIA,tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK)
+        player:addQuest(SANDORIA, tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK)
     end
 end

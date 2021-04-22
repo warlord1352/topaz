@@ -48,6 +48,7 @@
 #include "../mob_modifier.h"
 #include "../weapon_skill.h"
 #include "../mobskill.h"
+#include "../roe.h"
 #include "../treasure_pool.h"
 #include "../conquest_system.h"
 
@@ -284,16 +285,27 @@ bool CMobEntity::CanLink(position_t* pos, int16 superLink)
         return false;
     }
 
+    // Don't link I'm an underground antlion
+    if ((m_roamFlags & ROAMFLAG_AMBUSH) && IsNameHidden())
+    {
+        return false;
+    }
+
     // link only if I see him
     if (m_Detects & DETECT_SIGHT) {
 
-        if (!isFaceing(loc.p, *pos, 40))
+        if (!facing(loc.p, *pos, 64))
         {
             return false;
         }
     }
 
     if (distance(loc.p, *pos) > getMobMod(MOBMOD_LINK_RADIUS))
+    {
+        return false;
+    }
+
+    if (getMobMod(MOBMOD_NO_LINK) > 0)
     {
         return false;
     }
@@ -326,7 +338,7 @@ bool CMobEntity::CanBeNeutral()
     return !(m_Type & MOBTYPE_NOTORIOUS);
 }
 
-uint8 CMobEntity::TPUseChance()
+uint16 CMobEntity::TPUseChance()
 {
     auto& MobSkillList = battleutils::GetMobSkillList(getMobMod(MOBMOD_SKILL_LIST));
 
@@ -337,10 +349,10 @@ uint8 CMobEntity::TPUseChance()
 
     if (health.tp == 3000 || (GetHPP() <= 25 && health.tp >= 1000))
     {
-        return 100;
+        return 10000;
     }
 
-    return (uint8)getMobMod(MOBMOD_TP_USE_CHANCE);
+    return (uint16)getMobMod(MOBMOD_TP_USE_CHANCE);
 }
 
 void CMobEntity::setMobMod(uint16 type, int16 value)
@@ -611,6 +623,15 @@ void CMobEntity::OnMobSkillFinished(CMobSkillState& state, action_t& action)
         }
         else
         {
+            if (this->objtype == TYPE_MOB && PTarget->objtype == TYPE_PC)
+            {
+                CBattleEntity* PCoverAbilityUser = battleutils::GetCoverAbilityUser(PTarget, this);
+                if (PCoverAbilityUser != nullptr)
+                {
+                    PTarget = PCoverAbilityUser;
+                }
+            }
+
             PAI->TargetFind->findSingleTarget(PTarget, findFlags);
         }
     }
@@ -762,6 +783,15 @@ void CMobEntity::DistributeRewards()
             {
                 charutils::DistributeGil(PChar, this); // TODO: REALISATION MUST BE IN TREASUREPOOL
             }
+
+            // RoE Mob kill event for all party members
+            PChar->ForAlliance([this, PChar](CBattleEntity* PMember)
+            {
+                if (PMember->getZone() == PChar->getZone())
+                {
+                    roeutils::event(ROE_MOBKILL, (CCharEntity*)PMember, RoeDatagram("mob", (CMobEntity*)this));
+                }
+            });
 
             DropItems(PChar);
         }
@@ -918,7 +948,7 @@ void CMobEntity::DropItems(CCharEntity* PChar)
         // Wiki's have conflicting info on mob lv required for Geodes. One says 50 the other 75. I think 50 is correct.
 
         uint8 effect = 0; // Begin Adding Crystals
-        
+
         if (m_Element > 0)
         {
             uint8 regionID = PChar->loc.zone->GetRegionID();

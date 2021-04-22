@@ -45,6 +45,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/
 #include "status_effect_container.h"
 #include "treasure_pool.h"
 
+#include "utils/charutils.h"
 #include "utils/itemutils.h"
 #include "utils/zoneutils.h"
 #include "zone.h"
@@ -288,7 +289,9 @@ bool CBattlefield::InsertEntity(CBaseEntity* PEntity, bool enter, BATTLEFIELDMOB
             {
                 ApplyLevelRestrictions(PChar);
                 m_EnteredPlayers.emplace(PEntity->id);
+                PChar->ClearTrusts();
                 luautils::OnBattlefieldEnter(PChar, this);
+                charutils::SendTimerPacket(PChar, m_TimeLimit);
             }
             else if (!IsRegistered(PChar))
             {
@@ -423,10 +426,11 @@ bool CBattlefield::RemoveEntity(CBaseEntity* PEntity, uint8 leavecode)
     auto found = false;
     if (PEntity->objtype == TYPE_PC)
     {
+        auto PChar = dynamic_cast<CCharEntity*>(PEntity);
         if (!(m_Rules & BCRULES::RULES_ALLOW_SUBJOBS))
-            static_cast<CCharEntity*>(PEntity)->StatusEffectContainer->DelStatusEffect(EFFECT_SJ_RESTRICTION);
+            PChar->StatusEffectContainer->DelStatusEffect(EFFECT_SJ_RESTRICTION);
         if (m_LevelCap)
-            static_cast<CCharEntity*>(PEntity)->StatusEffectContainer->DelStatusEffect(EFFECT_LEVEL_RESTRICTION);
+            PChar->StatusEffectContainer->DelStatusEffect(EFFECT_LEVEL_RESTRICTION);
 
         m_EnteredPlayers.erase(m_EnteredPlayers.find(PEntity->id));
 
@@ -442,8 +446,9 @@ bool CBattlefield::RemoveEntity(CBaseEntity* PEntity, uint8 leavecode)
                 PEntity->loc.p.y = 0;
                 PEntity->loc.p.z = 0;
             }
-            luautils::OnBattlefieldLeave(static_cast<CCharEntity*>(PEntity), this, leavecode);
+            luautils::OnBattlefieldLeave(PChar, this, leavecode);
         }
+        charutils::SendClearTimerPacket(PChar);
     }
     else
     {
@@ -455,7 +460,7 @@ bool CBattlefield::RemoveEntity(CBaseEntity* PEntity, uint8 leavecode)
             PEntity->loc.zone->PushPacket(PEntity, CHAR_INRANGE, new CEntityUpdatePacket(PEntity, ENTITY_DESPAWN, UPDATE_ALL_MOB));
             m_NpcList.erase(std::remove_if(m_NpcList.begin(), m_NpcList.end(), check), m_NpcList.end());
         }
-        else if (PEntity->objtype == TYPE_MOB || PEntity->objtype == TYPE_PET || PEntity->objtype == TYPE_TRUST)
+        else if (PEntity->objtype == TYPE_MOB || PEntity->objtype == TYPE_PET)
         {
             // todo: probably need to check allegiance too cause besieged will prolly use > 0x700 too
             // allies targid >= 0x700
@@ -480,13 +485,13 @@ bool CBattlefield::RemoveEntity(CBaseEntity* PEntity, uint8 leavecode)
         }
         PEntity->loc.zone->PushPacket(PEntity, CHAR_INRANGE, new CEntityAnimationPacket(PEntity, CEntityAnimationPacket::Fade_Out));
     }
-    // assume its either a player or ally and remove any enmity
-    if (PEntity->objtype != TYPE_NPC)
+
+    // Remove enmity from valid battle entities
+    if (auto PBattleEntity = dynamic_cast<CBattleEntity*>(PEntity))
     {
-        auto entity = static_cast<CBattleEntity*>(PEntity);
-        entity->StatusEffectContainer->DelStatusEffectsByFlag(EFFECTFLAG_CONFRONTATION, true);
-        entity->StatusEffectContainer->DelStatusEffect(EFFECT_LEVEL_RESTRICTION);
-        ClearEnmityForEntity(entity);
+        PBattleEntity->StatusEffectContainer->DelStatusEffectsByFlag(EFFECTFLAG_CONFRONTATION, true);
+        PBattleEntity->StatusEffectContainer->DelStatusEffect(EFFECT_LEVEL_RESTRICTION);
+        ClearEnmityForEntity(PBattleEntity);
     }
 
     PEntity->PBattlefield = nullptr;

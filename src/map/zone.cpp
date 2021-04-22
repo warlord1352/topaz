@@ -37,6 +37,7 @@
 #include "map.h"
 #include "message.h"
 #include "party.h"
+#include "notoriety_container.h"
 #include "spell.h"
 #include "status_effect_container.h"
 #include "treasure_pool.h"
@@ -627,6 +628,7 @@ void CZone::DecreaseZoneCounter(CCharEntity* PChar)
 
 void CZone::IncreaseZoneCounter(CCharEntity* PChar)
 {
+    TracyZoneScoped;
     TPZ_DEBUG_BREAK_IF(PChar == nullptr);
     TPZ_DEBUG_BREAK_IF(PChar->loc.zone != nullptr);
     TPZ_DEBUG_BREAK_IF(PChar->PTreasurePool != nullptr);
@@ -880,6 +882,7 @@ void CZone::createZoneTimer()
 
 void CZone::CharZoneIn(CCharEntity* PChar)
 {
+    TracyZoneScoped;
     // ищем свободный targid для входящего в зону персонажа
 
     PChar->loc.zone = this;
@@ -934,6 +937,7 @@ void CZone::CharZoneIn(CCharEntity* PChar)
 
 void CZone::CharZoneOut(CCharEntity* PChar)
 {
+    TracyZoneScoped;
     for (regionList_t::const_iterator region = m_regionList.begin(); region != m_regionList.end(); ++region)
     {
         if ((*region)->GetRegionID() == PChar->m_InsideRegionID)
@@ -1028,6 +1032,7 @@ void CZone::CharZoneOut(CCharEntity* PChar)
 
 void CZone::CheckRegions(CCharEntity* PChar)
 {
+    TracyZoneScoped;
     uint32 RegionID = 0;
 
     for (regionList_t::const_iterator region = m_regionList.begin(); region != m_regionList.end(); ++region)

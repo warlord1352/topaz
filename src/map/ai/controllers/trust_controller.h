@@ -46,11 +46,13 @@ public:
     bool Ability(uint16 targid, uint16 abilityid) override;
     bool Cast(uint16 targid, SpellID spellid) override;
 
-    static constexpr float RoamDistance{ 2.0f };
-    static constexpr float SpawnDistance{ 3.0f };
-    static constexpr float WarpDistance{ 30.0f };
+    bool RangedAttack(uint16 targid);
 
-    // TODO: Replace with reverse enmity container
+    static constexpr float RoamDistance = { 2.0f };
+    static constexpr float SpawnDistance = { 3.0f };
+    static constexpr float CastingDistance = { 15.0f };
+    static constexpr float WarpDistance = { 30.0f };
+
     CBattleEntity* GetTopEnmity();
 
     std::unique_ptr<gambits::CGambitsContainer> m_GambitsContainer;
@@ -59,11 +61,23 @@ private:
     void DoCombatTick(time_point tick) override;
     void DoRoamTick(time_point tick) override;
 
+    void Declump(CCharEntity* PMaster, CBattleEntity* PTarget);
+    void PathOutToDistance(CBattleEntity* PTarget, float amount);
+
     uint8 GetPartyPosition();
 
     CBattleEntity* m_LastTopEnmity;
+
+    time_point m_LastRepositionTime;
+    uint8 m_failedRepositionAttempts;
+    bool m_InTransit;
+
     time_point m_CombatEndTime;
     time_point m_LastHealTickTime;
+    std::vector<std::chrono::seconds> m_tickDelays = { 15s, 10s, 10s, 3s };
+    std::size_t m_NumHealingTicks = { 0 };
+
+    time_point m_LastRangedAttackTime;
 };
 
 #endif // _TRUSTCONTROLLER

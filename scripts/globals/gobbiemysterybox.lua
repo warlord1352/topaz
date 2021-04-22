@@ -1,5 +1,6 @@
 --------------------------------------------------------
 require("scripts/globals/settings")
+require("scripts/globals/utils")
 -------------------------------------------------------
 
 tpz = tpz or {}
@@ -65,6 +66,7 @@ local fortuneItems =
 }
 local anniversaryItems =
 {
+    -- TODO: The anniversary item table needs to be populated
     9274 -- just give them back their key until this table can be populated
 }
 local gobbieJunk =
@@ -90,6 +92,7 @@ tpz.mystery.onTrade = function (player, npc, trade, events)
     if trade:getItemCount() == 1 then
         local tradeID = trade:getItemId(0)
         if keyToDial[tradeID] ~= nil then
+            -- TODO: Without campaigns, there's currently no method for obtaining keys
             if player:getFreeSlotsCount() == 0 then
                 player:startEvent(events.FULL_INV, tradeID, keyToDial[tradeID])
                 return false
@@ -97,6 +100,7 @@ tpz.mystery.onTrade = function (player, npc, trade, events)
             player:setLocalVar("gobbieBoxKey", tradeID)
             player:startEvent(events.KEY_TRADE, tradeID, keyToDial[tradeID])
         else -- trade for points
+            -- TODO: Point system needs to be defined
             return false
         end
     else
@@ -110,10 +114,10 @@ tpz.mystery.onTrigger = function (player, npc, events)
     local dailyTallyPoints = player:getCurrency("daily_tally")
     local firstVisit = dailyTallyPoints == -1
     local gobbieBoxUsed = player:getCharVar("gobbieBoxUsed")
-    local specialDialUsed = player:getMaskBit(gobbieBoxUsed, 0) and 1 or 0
-    local adoulinDialUsed = player:getMaskBit(gobbieBoxUsed, 1) and 1 or 0
-    local pictlogicaDialUsed = player:getMaskBit(gobbieBoxUsed, 2) and 1 or 0
-    local wantedDialUsed = player:getMaskBit(gobbieBoxUsed, 3) and 1 or 0
+    local specialDialUsed = utils.mask.getBit(gobbieBoxUsed, 0) and 1 or 0
+    local adoulinDialUsed = utils.mask.getBit(gobbieBoxUsed, 1) and 1 or 0
+    local pictlogicaDialUsed = utils.mask.getBit(gobbieBoxUsed, 2) and 1 or 0
+    local wantedDialUsed = utils.mask.getBit(gobbieBoxUsed, 3) and 1 or 0
     local holdingItem = player:getCharVar("gobbieBoxHoldingItem")
 
     if playerAgeDays >= GOBBIE_BOX_MIN_AGE and firstVisit then
@@ -125,7 +129,7 @@ tpz.mystery.onTrigger = function (player, npc, events)
             player:startEvent(event.DEFAULT, specialDialUsed, adoulinDialUsed, pictlogicaDialUsed, wantedDialUsed, 0, 0, hideOptionFlags, dailyTallyPoints)
         end
     else
-        player:messageSpecial(zones[player:getZoneID()].text.YOU_MUST_WAIT_ANOTHER_N_DAYS, GOBBIE_BOX_MIN_AGE - playerAgeDays)
+        player:messageSpecial(zones[player:getZoneID()].text.YOU_MUST_WAIT_ANOTHER_N_DAYS, GOBBIE_BOX_MIN_AGE - playerAgeDays + 1)
     end
 end
 
@@ -134,10 +138,10 @@ tpz.mystery.onEventUpdate = function (player, csid, option, events)
     local dailyTallyPoints = player:getCurrency("daily_tally")
     local holdingItem = player:getCharVar("gobbieBoxHoldingItem")
     local gobbieBoxUsed = player:getCharVar("gobbieBoxUsed")
-    local specialDialUsed = player:getMaskBit(gobbieBoxUsed, 0) and 1 or 0
-    local adoulinDialUsed = player:getMaskBit(gobbieBoxUsed, 1) and 1 or 0
-    local pictlogicaDialUsed = player:getMaskBit(gobbieBoxUsed, 2) and 1 or 0
-    local wantedDialUsed = player:getMaskBit(gobbieBoxUsed, 3) and 1 or 0
+    local specialDialUsed = utils.mask.getBit(gobbieBoxUsed, 0) and 1 or 0
+    local adoulinDialUsed = utils.mask.getBit(gobbieBoxUsed, 1) and 1 or 0
+    local pictlogicaDialUsed = utils.mask.getBit(gobbieBoxUsed, 2) and 1 or 0
+    local wantedDialUsed = utils.mask.getBit(gobbieBoxUsed, 3) and 1 or 0
     local itemID = 0
 
     if csid == event.KEY_TRADE then
@@ -183,7 +187,7 @@ tpz.mystery.onEventUpdate = function (player, csid, option, events)
             local dial_mask = false
             if dial >= 6 then
                 dial_mask = dial - 6
-                dial_used = player:getMaskBit(gobbieBoxUsed, dial_mask)
+                dial_used = utils.mask.getBit(gobbieBoxUsed, dial_mask)
             end
             switch (option_type): caseof
             {
@@ -195,7 +199,7 @@ tpz.mystery.onEventUpdate = function (player, csid, option, events)
                         player:setCharVar("gobbieBoxHoldingItem", itemID)
                         player:setCurrency("daily_tally", dailyTallyPoints - dial_cost)
                         if dial_mask then
-                            player:setMaskBit(gobbieBoxUsed, "gobbieBoxUsed", dial_mask, true)
+                            player:setCharVar("gobbieBoxUsed", utils.mask.setBit(gobbieBoxUsed, dial_mask, true))
                         end
                         player:updateEvent(itemID, dial, 0)
                     else

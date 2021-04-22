@@ -1,7 +1,6 @@
 require("scripts/globals/spell_data")
 require("scripts/globals/magicburst")
 require("scripts/globals/settings")
-require("scripts/globals/weather")
 require("scripts/globals/status")
 require("scripts/globals/utils")
 require("scripts/globals/msg")
@@ -14,25 +13,24 @@ tpz.magic = tpz.magic or {}
 -- Tables by element
 ------------------------------------
 
-tpz.magic.dayStrong           = {tpz.day.FIRESDAY,              tpz.day.EARTHSDAY,              tpz.day.WATERSDAY,               tpz.day.WINDSDAY,              tpz.day.ICEDAY,               tpz.day.LIGHTNINGDAY,            tpz.day.LIGHTSDAY,           tpz.day.DARKSDAY}
-tpz.magic.singleWeatherStrong = {tpz.weather.HOT_SPELL,         tpz.weather.DUST_STORM,         tpz.weather.RAIN,                tpz.weather.WIND,              tpz.weather.SNOW,             tpz.weather.THUNDER,             tpz.weather.AURORAS,         tpz.weather.GLOOM}
-tpz.magic.doubleWeatherStrong = {tpz.weather.HEAT_WAVE,         tpz.weather.SAND_STORM,         tpz.weather.SQUALL,              tpz.weather.GALES,             tpz.weather.BLIZZARDS,        tpz.weather.THUNDERSTORMS,       tpz.weather.STELLAR_GLARE,   tpz.weather.DARKNESS}
-local elementalObiStrong      = {tpz.mod.FORCE_FIRE_DWBONUS,    tpz.mod.FORCE_EARTH_DWBONUS,    tpz.mod.FORCE_WATER_DWBONUS,     tpz.mod.FORCE_WIND_DWBONUS,    tpz.mod.FORCE_ICE_DWBONUS,    tpz.mod.FORCE_LIGHTNING_DWBONUS, tpz.mod.FORCE_LIGHT_DWBONUS, tpz.mod.FORCE_DARK_DWBONUS}
-local spellAcc                = {tpz.mod.FIREACC,               tpz.mod.EARTHACC,               tpz.mod.WATERACC,                tpz.mod.WINDACC,               tpz.mod.ICEACC,               tpz.mod.THUNDERACC,              tpz.mod.LIGHTACC,            tpz.mod.DARKACC}
-local strongAffinityDmg       = {tpz.mod.FIRE_AFFINITY_DMG,     tpz.mod.EARTH_AFFINITY_DMG,     tpz.mod.WATER_AFFINITY_DMG,      tpz.mod.WIND_AFFINITY_DMG,     tpz.mod.ICE_AFFINITY_DMG,     tpz.mod.THUNDER_AFFINITY_DMG,    tpz.mod.LIGHT_AFFINITY_DMG,  tpz.mod.DARK_AFFINITY_DMG}
-local strongAffinityAcc       = {tpz.mod.FIRE_AFFINITY_ACC,     tpz.mod.EARTH_AFFINITY_ACC,     tpz.mod.WATER_AFFINITY_ACC,      tpz.mod.WIND_AFFINITY_ACC,     tpz.mod.ICE_AFFINITY_ACC,     tpz.mod.THUNDER_AFFINITY_ACC,    tpz.mod.LIGHT_AFFINITY_ACC,  tpz.mod.DARK_AFFINITY_ACC}
-tpz.magic.resistMod           = {tpz.mod.FIRERES,               tpz.mod.EARTHRES,               tpz.mod.WATERRES,                tpz.mod.WINDRES,               tpz.mod.ICERES,               tpz.mod.THUNDERRES,              tpz.mod.LIGHTRES,            tpz.mod.DARKRES}
-tpz.magic.defenseMod          = {tpz.mod.FIREDEF,               tpz.mod.EARTHDEF,               tpz.mod.WATERDEF,                tpz.mod.WINDDEF,               tpz.mod.ICEDEF,               tpz.mod.THUNDERDEF,              tpz.mod.LIGHTDEF,            tpz.mod.DARKDEF}
-tpz.magic.absorbMod           = {tpz.mod.FIRE_ABSORB,           tpz.mod.EARTH_ABSORB,           tpz.mod.WATER_ABSORB,            tpz.mod.WIND_ABSORB,           tpz.mod.ICE_ABSORB,           tpz.mod.LTNG_ABSORB,             tpz.mod.LIGHT_ABSORB,        tpz.mod.DARK_ABSORB}
-local nullMod                 = {tpz.mod.FIRE_NULL,             tpz.mod.EARTH_NULL,             tpz.mod.WATER_NULL,              tpz.mod.WIND_NULL,             tpz.mod.ICE_NULL,             tpz.mod.LTNG_NULL,               tpz.mod.LIGHT_NULL,          tpz.mod.DARK_NULL}
-local blmMerit                = {tpz.merit.FIRE_MAGIC_POTENCY,  tpz.merit.EARTH_MAGIC_POTENCY,  tpz.merit.WATER_MAGIC_POTENCY,   tpz.merit.WIND_MAGIC_POTENCY,  tpz.merit.ICE_MAGIC_POTENCY,  tpz.merit.LIGHTNING_MAGIC_POTENCY}
-local rdmMerit                = {tpz.merit.FIRE_MAGIC_ACCURACY, tpz.merit.EARTH_MAGIC_ACCURACY, tpz.merit.WATER_MAGIC_ACCURACY,  tpz.merit.WIND_MAGIC_ACCURACY, tpz.merit.ICE_MAGIC_ACCURACY, tpz.merit.LIGHTNING_MAGIC_ACCURACY}
-tpz.magic.barSpell            = {tpz.effect.BARFIRE,            tpz.effect.BARSTONE,            tpz.effect.BARWATER,             tpz.effect.BARAERO,            tpz.effect.BARBLIZZARD,       tpz.effect.BARTHUNDER}
+tpz.magic.dayStrong           = {tpz.day.FIRESDAY,              tpz.day.ICEDAY,               tpz.day.WINDSDAY,               tpz.day.EARTHSDAY,              tpz.day.LIGHTNINGDAY,               tpz.day.WATERSDAY,               tpz.day.LIGHTSDAY,           tpz.day.DARKSDAY}
+tpz.magic.singleWeatherStrong = {tpz.weather.HOT_SPELL,         tpz.weather.SNOW,             tpz.weather.WIND,               tpz.weather.DUST_STORM,         tpz.weather.THUNDER,                tpz.weather.RAIN,                tpz.weather.AURORAS,         tpz.weather.GLOOM}
+tpz.magic.doubleWeatherStrong = {tpz.weather.HEAT_WAVE,         tpz.weather.BLIZZARDS,        tpz.weather.GALES,              tpz.weather.SAND_STORM,         tpz.weather.THUNDERSTORMS,          tpz.weather.SQUALL,              tpz.weather.STELLAR_GLARE,   tpz.weather.DARKNESS}
+local elementalObi            = {tpz.mod.FORCE_FIRE_DWBONUS,    tpz.mod.FORCE_ICE_DWBONUS,    tpz.mod.FORCE_WIND_DWBONUS,     tpz.mod.FORCE_EARTH_DWBONUS,    tpz.mod.FORCE_LIGHTNING_DWBONUS,    tpz.mod.FORCE_WATER_DWBONUS,     tpz.mod.FORCE_LIGHT_DWBONUS, tpz.mod.FORCE_DARK_DWBONUS}
+local spellAcc                = {tpz.mod.FIREACC,               tpz.mod.ICEACC,               tpz.mod.WINDACC,                tpz.mod.EARTHACC,               tpz.mod.THUNDERACC,                 tpz.mod.WATERACC,                tpz.mod.LIGHTACC,            tpz.mod.DARKACC}
+local strongAffinityDmg       = {tpz.mod.FIRE_AFFINITY_DMG,     tpz.mod.ICE_AFFINITY_DMG,     tpz.mod.WIND_AFFINITY_DMG,      tpz.mod.EARTH_AFFINITY_DMG,     tpz.mod.THUNDER_AFFINITY_DMG,       tpz.mod.WATER_AFFINITY_DMG,      tpz.mod.LIGHT_AFFINITY_DMG,  tpz.mod.DARK_AFFINITY_DMG}
+local strongAffinityAcc       = {tpz.mod.FIRE_AFFINITY_ACC,     tpz.mod.ICE_AFFINITY_ACC,     tpz.mod.WIND_AFFINITY_ACC,      tpz.mod.EARTH_AFFINITY_ACC,     tpz.mod.THUNDER_AFFINITY_ACC,       tpz.mod.WATER_AFFINITY_ACC,      tpz.mod.LIGHT_AFFINITY_ACC,  tpz.mod.DARK_AFFINITY_ACC}
+tpz.magic.resistMod           = {tpz.mod.FIRERES,               tpz.mod.ICERES,               tpz.mod.WINDRES,                tpz.mod.EARTHRES,               tpz.mod.THUNDERRES,                 tpz.mod.WATERRES,                tpz.mod.LIGHTRES,            tpz.mod.DARKRES}
+tpz.magic.defenseMod          = {tpz.mod.FIREDEF,               tpz.mod.ICEDEF,               tpz.mod.WINDDEF,                tpz.mod.EARTHDEF,               tpz.mod.THUNDERDEF,                 tpz.mod.WATERDEF,                tpz.mod.LIGHTDEF,            tpz.mod.DARKDEF}
+tpz.magic.absorbMod           = {tpz.mod.FIRE_ABSORB,           tpz.mod.ICE_ABSORB,           tpz.mod.WIND_ABSORB,            tpz.mod.EARTH_ABSORB,           tpz.mod.LTNG_ABSORB,                tpz.mod.WATER_ABSORB,            tpz.mod.LIGHT_ABSORB,        tpz.mod.DARK_ABSORB}
+local nullMod                 = {tpz.mod.FIRE_NULL,             tpz.mod.ICE_NULL,             tpz.mod.WIND_NULL,              tpz.mod.EARTH_NULL,             tpz.mod.LTNG_NULL,                  tpz.mod.WATER_NULL,              tpz.mod.LIGHT_NULL,          tpz.mod.DARK_NULL}
+local blmMerit                = {tpz.merit.FIRE_MAGIC_POTENCY,  tpz.merit.ICE_MAGIC_POTENCY,  tpz.merit.WIND_MAGIC_POTENCY,   tpz.merit.EARTH_MAGIC_POTENCY,  tpz.merit.LIGHTNING_MAGIC_POTENCY,  tpz.merit.WATER_MAGIC_POTENCY}
+local rdmMerit                = {tpz.merit.FIRE_MAGIC_ACCURACY, tpz.merit.ICE_MAGIC_ACCURACY, tpz.merit.WIND_MAGIC_ACCURACY,  tpz.merit.EARTH_MAGIC_ACCURACY, tpz.merit.LIGHTNING_MAGIC_ACCURACY, tpz.merit.WATER_MAGIC_ACCURACY}
+tpz.magic.barSpell            = {tpz.effect.BARFIRE,            tpz.effect.BARBLIZZARD,       tpz.effect.BARAERO,             tpz.effect.BARSTONE,            tpz.effect.BARTHUNDER,              tpz.effect.BARWATER}
 
-tpz.magic.dayWeak             = {tpz.day.WATERSDAY,             tpz.day.WINDSDAY,               tpz.day.LIGHTNINGDAY,            tpz.day.ICEDAY,                tpz.day.FIRESDAY,             tpz.day.EARTHSDAY,               tpz.day.DARKSDAY,            tpz.day.LIGHTSDAY}
-tpz.magic.singleWeatherWeak   = {tpz.weather.RAIN,              tpz.weather.WIND,               tpz.weather.THUNDER,             tpz.weather.SNOW,              tpz.weather.HOT_SPELL,        tpz.weather.DUST_STORM,          tpz.weather.GLOOM,           tpz.weather.AURORAS}
-tpz.magic.doubleWeatherWeak   = {tpz.weather.SQUALL,            tpz.weather.GALES,              tpz.weather.THUNDERSTORMS,       tpz.weather.BLIZZARDS,         tpz.weather.HEAT_WAVE,        tpz.weather.SAND_STORM,          tpz.weather.DARKNESS,        tpz.weather.STELLAR_GLARE}
-local elementalObiWeak        = {tpz.mod.FORCE_WATER_DWBONUS,   tpz.mod.FORCE_WIND_DWBONUS,     tpz.mod.FORCE_LIGHTNING_DWBONUS, tpz.mod.FORCE_ICE_DWBONUS,     tpz.mod.FORCE_FIRE_DWBONUS,   tpz.mod.FORCE_EARTH_DWBONUS,     tpz.mod.FORCE_DARK_DWBONUS,  tpz.mod.FORCE_LIGHT_DWBONUS}
+tpz.magic.dayWeak             = {tpz.day.WATERSDAY,             tpz.day.FIRESDAY,            tpz.day.ICEDAY,                  tpz.day.WINDSDAY,               tpz.day.EARTHSDAY,                  tpz.day.LIGHTNINGDAY,            tpz.day.DARKSDAY,            tpz.day.LIGHTSDAY           }
+tpz.magic.singleWeatherWeak   = {tpz.weather.RAIN,              tpz.weather.HOT_SPELL,       tpz.weather.SNOW,                tpz.weather.WIND,               tpz.weather.DUST_STORM,             tpz.weather.THUNDER,             tpz.weather.GLOOM,           tpz.weather.AURORAS         }
+tpz.magic.doubleWeatherWeak   = {tpz.weather.SQUALL,            tpz.weather.HEAT_WAVE,       tpz.weather.BLIZZARDS,           tpz.weather.GALES,              tpz.weather.SAND_STORM,             tpz.weather.THUNDERSTORMS,       tpz.weather.DARKNESS,        tpz.weather.STELLAR_GLARE   }
 
 -- USED FOR DAMAGING MAGICAL SPELLS (Stages 1 and 2 in Calculating Magic Damage on wiki)
 --Calculates magic damage using the standard magic damage calc.
@@ -108,9 +106,9 @@ function doBoostGain(caster, target, spell, effect)
     }
 
     for i, effect in ipairs(effectOverwrite) do
-            --printf("BOOST-GAIN: CHECKING FOR EFFECT %d...",effect)
+            --printf("BOOST-GAIN: CHECKING FOR EFFECT %d...", effect)
             if caster:hasStatusEffect(effect) then
-                --printf("BOOST-GAIN: HAS EFFECT %d, DELETING...",effect)
+                --printf("BOOST-GAIN: HAS EFFECT %d, DELETING...", effect)
                 caster:delStatusEffect(effect)
             end
     end
@@ -145,7 +143,7 @@ end
 --   getCureFinal returns the final cure amount
 --   Source: http://members.shaw.ca/pizza_steve/cure/Cure_Calculator.html
 ---------------------------------
-function getCurePower(caster,isBlueMagic)
+function getCurePower(caster, isBlueMagic)
     local MND = caster:getStat(tpz.mod.MND)
     local VIT = caster:getStat(tpz.mod.VIT)
     local skill = caster:getSkillLevel(tpz.skill.HEALING_MAGIC)
@@ -159,10 +157,10 @@ function getCurePowerOld(caster)
     local power = ((3 * MND) + VIT + (3 * math.floor(skill/5)))
     return power
 end
-function getBaseCure(power,divisor,constant,basepower)
+function getBaseCure(power, divisor, constant, basepower)
     return ((power - basepower) / divisor) + constant
 end
-function getBaseCureOld(power,divisor,constant)
+function getBaseCureOld(power, divisor, constant)
     return (power / 2) / divisor + constant
 end
 
@@ -195,39 +193,39 @@ function getCureFinal(caster, spell, basecure, minCure, isBlueMagic)
 
     if (castersWeather == tpz.magic.singleWeatherStrong[ele]) then
         if (caster:getMod(tpz.mod.IRIDESCENCE) >= 1) then
-            if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+            if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
                 dayWeatherBonus = dayWeatherBonus + 0.10
             end
         end
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus + 0.10
         end
     elseif (castersWeather == tpz.magic.singleWeatherWeak[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus - 0.10
         end
     elseif (castersWeather == tpz.magic.doubleWeatherStrong[ele]) then
         if (caster:getMod(tpz.mod.IRIDESCENCE) >= 1) then
-            if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+            if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
                 dayWeatherBonus = dayWeatherBonus + 0.10
             end
         end
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus + 0.25
         end
     elseif (castersWeather == tpz.magic.doubleWeatherWeak[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus - 0.25
         end
     end
 
     local dayElement = VanadielDayElement()
-    if (dayElement == tpz.magic.dayStrong[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+    if (dayElement == ele) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus + 0.10
         end
-    elseif (dayElement == tpz.magic.dayWeak[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+    elseif (dayElement == tpz.magic.elementDescendant[ele]) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus - 0.10
         end
     end
@@ -240,8 +238,8 @@ function getCureFinal(caster, spell, basecure, minCure, isBlueMagic)
     return final
 end
 
-function getCureAsNukeFinal(caster,spell,power,divisor,constant,basepower)
-    return getCureFinal(caster,spell,power,divisor,constant,basepower)
+function getCureAsNukeFinal(caster, spell, power, divisor, constant, basepower)
+    return getCureFinal(caster, spell, power, divisor, constant, basepower)
 end
 
 function isValidHealTarget(caster, target)
@@ -259,7 +257,7 @@ end
 -- affinities that strengthen/weaken the index element
 
 
-function AffinityBonusDmg(caster,ele)
+function AffinityBonusDmg(caster, ele)
 
     local affinity = caster:getMod(strongAffinityDmg[ele])
     local bonus = 1.00 + affinity * 0.05 -- 5% per level of affinity
@@ -267,7 +265,7 @@ function AffinityBonusDmg(caster,ele)
     return bonus
 end
 
-function AffinityBonusAcc(caster,ele)
+function AffinityBonusAcc(caster, ele)
 
     local affinity = caster:getMod(strongAffinityAcc[ele])
     local bonus = 0 + affinity * 10 -- 10 acc per level of affinity
@@ -310,7 +308,7 @@ function applyResistanceEffect(caster, target, spell, params)
     end
 
     if (skill == tpz.skill.SINGING and caster:hasStatusEffect(tpz.effect.TROUBADOUR)) then
-        if (math.random(0,99) < caster:getMerit(tpz.merit.TROUBADOUR)-25) then
+        if (math.random(0, 99) < caster:getMerit(tpz.merit.TROUBADOUR)-25) then
             return 1.0
         end
     end
@@ -339,14 +337,14 @@ function applyResistanceEffect(caster, target, spell, params)
 end
 
 -- Applies resistance for things that may not be spells - ie. Quick Draw
-function applyResistanceAbility(player,target,element,skill,bonus)
+function applyResistanceAbility(player, target, element, skill, bonus)
     local p = getMagicHitRate(player, target, skill, element, 0, bonus)
 
     return getMagicResist(p)
 end
 
 -- Applies resistance for additional effects
-function applyResistanceAddEffect(player,target,element,bonus)
+function applyResistanceAddEffect(player, target, element, bonus)
 
     local p = getMagicHitRate(player, target, 0, element, 0, bonus)
 
@@ -433,16 +431,16 @@ function getMagicResist(magicHitRate)
     -- Determine final resist based on which thresholds have been crossed.
     if (resvar <= sixteenth) then
         resist = 0.0625
-        --printf("Spell resisted to 1/16!!!  Threshold = %u",sixteenth)
+        --printf("Spell resisted to 1/16!!!  Threshold = %u", sixteenth)
     elseif (resvar <= eighth) then
         resist = 0.125
-        --printf("Spell resisted to 1/8!  Threshold = %u",eighth)
+        --printf("Spell resisted to 1/8!  Threshold = %u", eighth)
     elseif (resvar <= quart) then
         resist = 0.25
-        --printf("Spell resisted to 1/4.  Threshold = %u",quart)
+        --printf("Spell resisted to 1/4.  Threshold = %u", quart)
     elseif (resvar <= half) then
         resist = 0.5
-        --printf("Spell resisted to 1/2.  Threshold = %u",half)
+        --printf("Spell resisted to 1/2.  Threshold = %u", half)
     else
         resist = 1.0
         --printf("1.0")
@@ -455,6 +453,7 @@ end
 -- target has to the given effect (stun, sleep, etc..)
 function getEffectResistance(target, effect)
     local effectres = 0
+    local statusres = target:getMod(tpz.mod.STATUSRES)
     if (effect == tpz.effect.SLEEP_I or effect == tpz.effect.SLEEP_II) then
         effectres = tpz.mod.SLEEPRES
     elseif (effect == tpz.effect.LULLABY) then
@@ -488,10 +487,10 @@ function getEffectResistance(target, effect)
     end
 
     if (effectres ~= 0) then
-        return target:getMod(effectres)
+        return target:getMod(effectres) + statusres
     end
 
-    return 0
+    return statusres
 end
 
 -- Returns the bonus magic accuracy for any spell
@@ -535,7 +534,7 @@ function getSpellBonusAcc(caster, target, spell, params)
     end
 
     --add acc for RDM group 1 merits
-    if (element > 0 and element <= 6) then
+    if (element >= tpz.magic.element.FIRE and element <= tpz.magic.element.WATER) then
         magicAccBonus = magicAccBonus + caster:getMerit(rdmMerit[element])
     end
 
@@ -573,7 +572,7 @@ function handleAfflatusMisery(caster, spell, dmg)
     return dmg
 end
 
- function finalMagicAdjustments(caster,target,spell,dmg)
+ function finalMagicAdjustments(caster, target, spell, dmg)
     --Handles target's HP adjustment and returns UNSIGNED dmg (absorb message is set in this function)
 
     -- handle multiple targets
@@ -629,7 +628,7 @@ end
     else
         target:takeSpellDamage(caster, spell, dmg, tpz.attackType.MAGICAL, tpz.damageType.ELEMENTAL + spell:getElement())
         target:handleAfflatusMiseryDamage(dmg)
-        target:updateEnmityFromDamage(caster,dmg)
+        target:updateEnmityFromDamage(caster, dmg)
         -- Only add TP if the target is a mob
         if (target:getObjType() ~= tpz.objType.PC) then
             target:addTP(100)
@@ -639,7 +638,7 @@ end
     return dmg
  end
 
-function finalMagicNonSpellAdjustments(caster,target,ele,dmg)
+function finalMagicNonSpellAdjustments(caster, target, ele, dmg)
     --Handles target's HP adjustment and returns SIGNED dmg (negative values on absorb)
 
     dmg = target:magicDmgTaken(dmg)
@@ -661,16 +660,16 @@ function finalMagicNonSpellAdjustments(caster,target,ele,dmg)
     end
     --Not updating enmity from damage, as this is primarily used for additional effects (which don't generate emnity)
     -- in the case that updating enmity is needed, do it manually after calling this
-    --target:updateEnmityFromDamage(caster,dmg)
+    --target:updateEnmityFromDamage(caster, dmg)
 
     return dmg
 end
 
-function adjustForTarget(target,dmg,ele)
-    if (dmg > 0 and math.random(0,99) < target:getMod(tpz.magic.absorbMod[ele])) then
+function adjustForTarget(target, dmg, ele)
+    if (dmg > 0 and math.random(0, 99) < target:getMod(tpz.magic.absorbMod[ele])) then
         return -dmg
     end
-    if (math.random(0,99) < target:getMod(nullMod[ele])) then
+    if (math.random(0, 99) < target:getMod(nullMod[ele])) then
         return 0
     end
     --Moved non element specific absorb and null mod checks to core
@@ -748,40 +747,40 @@ function addBonuses(caster, spell, target, dmg, params)
 
     if (weather == tpz.magic.singleWeatherStrong[ele]) then
         if (caster:getMod(tpz.mod.IRIDESCENCE) >= 1) then
-            if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1 or isHelixSpell(spell)) then
+            if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1 or isHelixSpell(spell)) then
                 dayWeatherBonus = dayWeatherBonus + 0.10
             end
         end
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1 or isHelixSpell(spell)) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1 or isHelixSpell(spell)) then
             dayWeatherBonus = dayWeatherBonus + 0.10
         end
     elseif (caster:getWeather() == tpz.magic.singleWeatherWeak[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiWeak[ele]) >= 1 or isHelixSpell(spell)) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1 or isHelixSpell(spell)) then
             dayWeatherBonus = dayWeatherBonus - 0.10
         end
     elseif (weather == tpz.magic.doubleWeatherStrong[ele]) then
         if (caster:getMod(tpz.mod.IRIDESCENCE) >= 1) then
-            if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1 or isHelixSpell(spell)) then
+            if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1 or isHelixSpell(spell)) then
                 dayWeatherBonus = dayWeatherBonus + 0.10
             end
         end
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1 or isHelixSpell(spell)) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1 or isHelixSpell(spell)) then
             dayWeatherBonus = dayWeatherBonus + 0.25
         end
     elseif (weather == tpz.magic.doubleWeatherWeak[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiWeak[ele]) >= 1 or isHelixSpell(spell)) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1 or isHelixSpell(spell)) then
             dayWeatherBonus = dayWeatherBonus - 0.25
         end
     end
 
     local dayElement = VanadielDayElement()
-    if (dayElement == tpz.magic.dayStrong[ele]) then
+    if (dayElement == ele) then
         dayWeatherBonus = dayWeatherBonus + caster:getMod(tpz.mod.DAY_NUKE_BONUS)/100 -- sorc. tonban(+1)/zodiac ring
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1 or isHelixSpell(spell)) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1 or isHelixSpell(spell)) then
             dayWeatherBonus = dayWeatherBonus + 0.10
         end
-    elseif (dayElement == tpz.magic.dayWeak[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiWeak[ele]) >= 1 or isHelixSpell(spell)) then
+    elseif (dayElement == tpz.magic.elementDescendant[ele]) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1 or isHelixSpell(spell)) then
             dayWeatherBonus = dayWeatherBonus - 0.10
         end
     end
@@ -815,12 +814,12 @@ function addBonuses(caster, spell, target, dmg, params)
         end
 
         local mab_crit = caster:getMod(tpz.mod.MAGIC_CRITHITRATE)
-        if ( math.random(1,100) < mab_crit ) then
+        if ( math.random(1, 100) < mab_crit ) then
            mab = mab + ( 10 + caster:getMod(tpz.mod.MAGIC_CRIT_DMG_INCREASE ) )
         end
 
         local mdefBarBonus = 0
-        if (ele > 0 and ele <= 6) then
+        if (ele >= tpz.magic.element.FIRE and ele <= tpz.magic.element.WATER) then
             mab = mab + caster:getMerit(blmMerit[ele])
             if (target:hasStatusEffect(tpz.magic.barSpell[ele])) then -- bar- spell magic defense bonus
                 mdefBarBonus = target:getStatusEffect(tpz.magic.barSpell[ele]):getSubPower()
@@ -865,40 +864,40 @@ function addBonusesAbility(caster, ele, target, dmg, params)
 
     if (weather == tpz.magic.singleWeatherStrong[ele]) then
         if (caster:getMod(tpz.mod.IRIDESCENCE) >= 1) then
-            if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+            if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
                 dayWeatherBonus = dayWeatherBonus + 0.10
             end
         end
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus + 0.10
         end
     elseif (caster:getWeather() == tpz.magic.singleWeatherWeak[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiWeak[ele]) >= 1) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus - 0.10
         end
     elseif (weather == tpz.magic.doubleWeatherStrong[ele]) then
         if (caster:getMod(tpz.mod.IRIDESCENCE) >= 1) then
-            if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+            if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
                 dayWeatherBonus = dayWeatherBonus + 0.10
             end
         end
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus + 0.25
         end
     elseif (weather == tpz.magic.doubleWeatherWeak[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiWeak[ele]) >= 1) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus - 0.25
         end
     end
 
     local dayElement = VanadielDayElement()
-    if (dayElement == tpz.magic.dayStrong[ele]) then
+    if (dayElement == ele) then
         dayWeatherBonus = dayWeatherBonus + caster:getMod(tpz.mod.DAY_NUKE_BONUS)/100 -- sorc. tonban(+1)/zodiac ring
-        if (math.random() < 0.33 or caster:getMod(elementalObiStrong[ele]) >= 1) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus + 0.10
         end
-    elseif (dayElement == tpz.magic.dayWeak[ele]) then
-        if (math.random() < 0.33 or caster:getMod(elementalObiWeak[ele]) >= 1) then
+    elseif (dayElement == tpz.magic.elementDescendant[ele]) then
+        if (math.random() < 0.33 or caster:getMod(elementalObi[ele]) >= 1) then
             dayWeatherBonus = dayWeatherBonus - 0.10
         end
     end
@@ -911,7 +910,11 @@ function addBonusesAbility(caster, ele, target, dmg, params)
 
     local mab = 1
     local mdefBarBonus = 0
-    if (ele > 0 and ele <= 6 and target:hasStatusEffect(tpz.magic.barSpell[ele])) then -- bar- spell magic defense bonus
+    if
+        ele >= tpz.magic.element.FIRE and
+        ele <= tpz.magic.element.WATER and
+        target:hasStatusEffect(tpz.magic.barSpell[ele])
+    then -- bar- spell magic defense bonus
         mdefBarBonus = target:getStatusEffect(tpz.magic.barSpell[ele]):getSubPower()
     end
 
@@ -1219,9 +1222,9 @@ function doNuke(caster, target, spell, params)
     --add on bonuses (staff/day/weather/jas/mab/etc all go in this function)
     dmg = addBonuses(caster, spell, target, dmg, params)
     --add in target adjustment
-    dmg = adjustForTarget(target,dmg,spell:getElement())
+    dmg = adjustForTarget(target, dmg, spell:getElement())
     --add in final adjustments
-    dmg = finalMagicAdjustments(caster,target,spell,dmg)
+    dmg = finalMagicAdjustments(caster, target, spell, dmg)
     return dmg
 end
 
@@ -1239,11 +1242,11 @@ function doDivineBanishNuke(caster, target, spell, params)
     --add on bonuses (staff/day/weather/jas/mab/etc all go in this function)
     dmg = addBonuses(caster, spell, target, dmg, params)
     --add in target adjustment
-    dmg = adjustForTarget(target,dmg,spell:getElement())
+    dmg = adjustForTarget(target, dmg, spell:getElement())
     --handling afflatus misery
     dmg = handleAfflatusMisery(caster, spell, dmg)
     --add in final adjustments
-    dmg = finalMagicAdjustments(caster,target,spell,dmg)
+    dmg = finalMagicAdjustments(caster, target, spell, dmg)
     return dmg
 end
 
