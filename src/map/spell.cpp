@@ -149,7 +149,7 @@ bool CSpell::tookEffect()
 
 bool CSpell::hasMPCost()
 {
-    return m_spellGroup != SPELLGROUP_SONG && m_spellGroup != SPELLGROUP_NINJUTSU;
+    return m_spellGroup != SPELLGROUP_SONG && m_spellGroup != SPELLGROUP_NINJUTSU && m_spellGroup != SPELLGROUP_TRUST;
 }
 
 bool CSpell::isHeal()
@@ -172,6 +172,11 @@ bool CSpell::isDebuff()
 bool CSpell::isNa()
 {
     return (static_cast<uint16>(m_ID) >= 14 && static_cast<uint16>(m_ID) <= 20) || m_ID == SpellID::Erase;
+}
+
+bool CSpell::isSevere()
+{
+    return m_ID == SpellID::Death || m_ID == SpellID::Impact || m_ID == SpellID::Meteor || m_ID == SpellID::Meteor_II || m_ID == SpellID::Comet;
 }
 
 bool CSpell::canHitShadow()
@@ -605,14 +610,17 @@ namespace spell
                 {
                     return false;
                 }
+
                 // ensure trust level is appropriate+
-                if (PCaster->objtype == TYPE_TRUST && PCaster->GetMLevel() < JobMLVL)
+                if (PCaster->objtype == TYPE_TRUST && PCaster->GetMLevel() < JobMLVL && PCaster->GetSLevel() < JobSLVL)
                 {
                     return false;
                 }
+
                 // Mobs can cast any non-given char spell
                 return true;
             }
+
             if (PCaster->objtype == TYPE_PC && spell->getSpellGroup() == SPELLGROUP_TRUST)
             {
                 return true; // every PC can use trusts

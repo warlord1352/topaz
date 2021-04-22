@@ -589,6 +589,7 @@ void SetupJob(CMobEntity* PMob)
             PMob->defaultMobMod(MOBMOD_MAGIC_COOL, 35);
             PMob->defaultMobMod(MOBMOD_GA_CHANCE, 40);
             PMob->defaultMobMod(MOBMOD_BUFF_CHANCE, 15);
+            PMob->defaultMobMod(MOBMOD_SEVERE_SPELL_CHANCE, 20);
             break;
         case JOB_PLD:
             PMob->defaultMobMod(MOBMOD_MAGIC_COOL, 35);
@@ -801,7 +802,7 @@ void SetupBattlefieldMob(CMobEntity* PMob)
     PMob->SetDespawnTime(0s);
     // Limbus mobs
     uint16 zoneID = PMob->getZone();
-    if(zoneID == 37 || zoneID == 38) 
+    if (zoneID == 37 || zoneID == 38)
     {
         PMob->setMobMod(MOBMOD_ALLI_HATE, 200);
     }
@@ -888,6 +889,7 @@ void GetAvailableSpells(CMobEntity* PMob) {
     PMob->defaultMobMod(MOBMOD_MAGIC_COOL, 35);
     PMob->defaultMobMod(MOBMOD_GA_CHANCE, 35);
     PMob->defaultMobMod(MOBMOD_NA_CHANCE, 40);
+    PMob->defaultMobMod(MOBMOD_SEVERE_SPELL_CHANCE, 20);
     PMob->defaultMobMod(MOBMOD_BUFF_CHANCE, 35);
     PMob->defaultMobMod(MOBMOD_HEAL_CHANCE, 40);
     PMob->defaultMobMod(MOBMOD_HP_HEAL_CHANCE, 40);
@@ -918,7 +920,7 @@ void InitializeMob(CMobEntity* PMob, CZone* PZone)
 
     PMob->defaultMobMod(MOBMOD_SKILL_LIST, PMob->m_MobSkillList);
     PMob->defaultMobMod(MOBMOD_LINK_RADIUS, 10);
-    PMob->defaultMobMod(MOBMOD_TP_USE_CHANCE, 30);
+    PMob->defaultMobMod(MOBMOD_TP_USE_CHANCE, 92); // 92 = 0.92% chance per 400ms tick (50% chance by 30 seconds) while mob HPP>25 and mob TP >=1000 but <3000
     PMob->defaultMobMod(MOBMOD_SIGHT_RANGE, (int16)CMobEntity::sight_range);
     PMob->defaultMobMod(MOBMOD_SOUND_RANGE, (int16)CMobEntity::sound_range);
 
@@ -1223,15 +1225,8 @@ CMobEntity* InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance)
             PMob->m_EcoSystem = (ECOSYSTEM)Sql_GetIntData(SqlHandle, 19);
             PMob->m_ModelSize = (uint8)Sql_GetIntData(SqlHandle, 20);
 
-            PMob->speed = (uint8)Sql_GetIntData(SqlHandle, 21);
-            PMob->speedsub = (uint8)Sql_GetIntData(SqlHandle, 21);
-
-            /*if(PMob->speed != 0)
-            {
-            PMob->speed += map_config.speed_mod;
-            // whats this for?
-            PMob->speedsub += map_config.speed_mod;
-            }*/
+            PMob->speed = (uint8)Sql_GetIntData(SqlHandle, 21);    // Overwrites baseentity.cpp's defined speed
+            PMob->speedsub = (uint8)Sql_GetIntData(SqlHandle, 21); // Overwrites baseentity.cpp's defined speedsub
 
             PMob->strRank = (uint8)Sql_GetIntData(SqlHandle, 22);
             PMob->dexRank = (uint8)Sql_GetIntData(SqlHandle, 23);

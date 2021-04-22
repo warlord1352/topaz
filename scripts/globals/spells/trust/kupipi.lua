@@ -10,6 +10,7 @@ require("scripts/globals/weaponskillids")
 require("scripts/globals/zone")
 -----------------------------------------
 
+local message_page_offset = 2
 
 function onMagicCastingCheck(caster, target, spell)
     return tpz.trust.canCast(caster, spell)
@@ -27,7 +28,7 @@ function onSpellCast(caster, target, spell)
 end
 
 function onMobSpawn(mob)
-    tpz.trust.teamworkMessage(mob, {
+    tpz.trust.teamworkMessage(mob, message_page_offset, {
         [tpz.magic.spell.SHANTOTTO] = tpz.trust.message_offset.TEAMWORK_1,
         [tpz.magic.spell.STAR_SIBYL] = tpz.trust.message_offset.TEAMWORK_2,
     })
@@ -49,7 +50,6 @@ function onMobSpawn(mob)
     mob:addSimpleGambit(ai.t.PARTY, ai.c.STATUS, tpz.effect.PETRIFICATION, ai.r.MA, ai.s.SPECIFIC, tpz.magic.spell.STONA)
     mob:addSimpleGambit(ai.t.PARTY, ai.c.STATUS, tpz.effect.DISEASE, ai.r.MA, ai.s.SPECIFIC, tpz.magic.spell.VIRUNA)
     mob:addSimpleGambit(ai.t.PARTY, ai.c.STATUS, tpz.effect.CURSE_I, ai.r.MA, ai.s.SPECIFIC, tpz.magic.spell.CURSNA)
-    mob:addSimpleGambit(ai.t.PARTY, ai.c.STATUS, tpz.effect.CURSE_II, ai.r.MA, ai.s.SPECIFIC, tpz.magic.spell.CURSNA)
 
     mob:addSimpleGambit(ai.t.SELF, ai.c.STATUS_FLAG, tpz.effectFlag.ERASABLE, ai.r.MA, ai.s.SPECIFIC, tpz.magic.spell.ERASE)
     mob:addSimpleGambit(ai.t.PARTY, ai.c.STATUS_FLAG, tpz.effectFlag.ERASABLE, ai.r.MA, ai.s.SPECIFIC, tpz.magic.spell.ERASE)
@@ -58,14 +58,12 @@ function onMobSpawn(mob)
     mob:addSimpleGambit(ai.t.TARGET, ai.c.NOT_STATUS, tpz.effect.SLOW, ai.r.MA, ai.s.HIGHEST, tpz.magic.spellFamily.SLOW, 60)
 
     mob:addSimpleGambit(ai.t.TARGET, ai.c.NOT_STATUS, tpz.effect.FLASH, ai.r.MA, ai.s.SPECIFIC, tpz.magic.spell.FLASH, 60)
-
-    mob:addSimpleGambit(ai.t.SELF, ai.c.TP_GTE, 1000, ai.r.WS, ai.s.SPECIFIC, tpz.ws.STARLIGHT)
 end
 
 function onMobDespawn(mob)
-    tpz.trust.message(mob, tpz.trust.message_offset.DESPAWN)
+    tpz.trust.message(mob, message_page_offset, tpz.trust.message_offset.DESPAWN)
 end
 
 function onMobDeath(mob)
-    tpz.trust.message(mob, tpz.trust.message_offset.DEATH)
+    tpz.trust.message(mob, message_page_offset, tpz.trust.message_offset.DEATH)
 end

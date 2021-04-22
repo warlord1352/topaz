@@ -523,7 +523,7 @@ void CParty::AddMember(CBattleEntity* PEntity)
         }
         PChar->PTreasurePool->UpdatePool(PChar);
 
-        //Apply level sync if the party is level synced
+        // Apply level sync if the party is level synced
         if (m_PSyncTarget != nullptr)
         {
             if (PChar->getZone() == m_PSyncTarget->getZone())
@@ -933,10 +933,21 @@ void CParty::SetLeader(const char* MemberName)
 
         m_PLeader = GetMemberByName((const int8*)MemberName);
         if (this->m_PAlliance && this->m_PAlliance->m_AllianceID == m_PartyID)
+        {
             m_PAlliance->m_AllianceID = newId;
+        }
 
         m_PartyID = newId;
         Sql_Query(SqlHandle, "UPDATE accounts_parties SET partyflag = partyflag | IF(allianceid = partyid, %d, %d) WHERE charid = %u", ALLIANCE_LEADER | PARTY_LEADER, PARTY_LEADER, newId);
+
+        // Passing leader dismisses trusts
+        for (auto* PMemberEntity : members)
+        {
+            if (auto* PMember = dynamic_cast<CCharEntity*>(PMemberEntity))
+            {
+                PMember->ClearTrusts();
+            }
+        }
     }
     else
     {
@@ -1178,6 +1189,21 @@ void CParty::SetPartyNumber(uint8 number)
 uint32 CParty::GetTimeLastMemberJoined()
 {
     return (uint32)std::chrono::time_point_cast<std::chrono::seconds>(m_TimeLastMemberJoined).time_since_epoch().count();
+}
+
+bool CParty::HasTrusts()
+{
+    for (auto* PMember : members)
+    {
+        if (auto PCharMember = dynamic_cast<CCharEntity*>(PMember))
+        {
+            if (!PCharMember->PTrusts.empty())
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void CParty::RefreshFlags(std::vector<partyInfo_t>& info)

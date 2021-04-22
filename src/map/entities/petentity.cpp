@@ -44,6 +44,7 @@ CPetEntity::CPetEntity(PETTYPE petType)
 	m_EcoSystem = SYSTEM_UNCLASSIFIED;
 	allegiance = ALLEGIANCE_PLAYER;
     m_MobSkillList = 0;
+    m_HasSpellScript = 0;
     PAI = std::make_unique<CAIContainer>(this, std::make_unique<CPathFind>(this), std::make_unique<CPetController>(this),
         std::make_unique<CTargetFind>(this));
 }
@@ -52,13 +53,14 @@ CPetEntity::~CPetEntity()
 {
 }
 
-PETTYPE CPetEntity::getPetType(){
-  return m_PetType;
+PETTYPE CPetEntity::getPetType()
+{
+    return m_PetType;
 }
 
 bool CPetEntity::isBstPet()
 {
-  return getPetType()==PETTYPE_JUG_PET || objtype == TYPE_MOB;
+  return getPetType() == PETTYPE_JUG_PET || objtype == TYPE_MOB;
 }
 
 std::string CPetEntity::GetScriptName()
@@ -86,8 +88,8 @@ std::string CPetEntity::GetScriptName()
         case PETTYPE_CHOCOBO:
             return "chocobo";
             break;
-        case PETTYPE_TRUST:
-            return (const char*)GetName();
+        case PETTYPE_LUOPAN:
+            return "luopan";
             break;
         default:
             return "";

@@ -71,6 +71,7 @@ void TOTDChange(TIMETYPE TOTD)
 
 void InitializeWeather()
 {
+    TracyZoneScoped;
     for (auto PZone : g_PZoneList)
     {
         if (!PZone.second->IsWeatherStatic())
@@ -302,8 +303,9 @@ void LoadNPCList()
 
                 PNpc->m_TargID = (uint32)Sql_GetUIntData(SqlHandle, 6) >> 16; // вполне вероятно
 
-                PNpc->speed = (uint8)Sql_GetIntData(SqlHandle, 7);
-                PNpc->speedsub = (uint8)Sql_GetIntData(SqlHandle, 8);
+                PNpc->speed = (uint8)Sql_GetIntData(SqlHandle, 7);    // Overwrites baseentity.cpp's defined speed
+                PNpc->speedsub = (uint8)Sql_GetIntData(SqlHandle, 8); // Overwrites baseentity.cpp's defined speedsub
+
                 PNpc->animation = (uint8)Sql_GetIntData(SqlHandle, 9);
                 PNpc->animationsub = (uint8)Sql_GetIntData(SqlHandle, 10);
 
@@ -626,6 +628,7 @@ CZone* CreateZone(uint16 ZoneID)
 
 void LoadZoneList()
 {
+    TracyZoneScoped;
     g_PTrigger = new CNpcEntity();  // нужно в конструкторе CNpcEntity задавать модель по умолчанию
 
     std::vector<uint16> zones;
@@ -984,6 +987,9 @@ int GetWeatherElement(WEATHER weather)
 {
     TPZ_DEBUG_BREAK_IF(weather >= MAX_WEATHER_ID);
 
+    // TODO: Fix weather ordering; at the moment, this current fire, water, earth, wind, snow, thunder
+    // order MUST be preserved due to the weather enums going in this order. Those enums will
+    // most likely have rippling effects, such as how weather data is stored in the db
     static uint8 Element[] =
     {
         0,  //WEATHER_NONE
